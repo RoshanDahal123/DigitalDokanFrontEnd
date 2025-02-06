@@ -3,6 +3,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { useAppDispatch } from "../../store/hook";
 
 import { loginUser } from "../../store/authSlice";
+import { Link } from "react-router-dom";
 
 function Login() {
   const dispatch = useAppDispatch();
@@ -81,6 +82,12 @@ function Login() {
               </button>
             </div>
           </form>
+          <p className="text-blue-500 font-medium text-center">
+            Don't Have An Account?{" "}
+            <Link to="/register" className="underline">
+              Register
+            </Link>
+          </p>
         </div>
       </div>
     </div>

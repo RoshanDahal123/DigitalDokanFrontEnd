@@ -3,8 +3,8 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 
 import { registerUser } from "../../store/authSlice";
-import { IAuthState, Status } from "../../globals/type";
-import { useNavigate } from "react-router-dom";
+import { IAuthState, IUser, Status } from "../../globals/type";
+import { Link, useNavigate } from "react-router-dom";
 
 /**
  * Register component handles the user registration process.
@@ -30,10 +30,11 @@ function Register() {
     (state: { auth: IAuthState }) => state.auth
   );
   console.log(status);
-  const [data, setData] = useState({
+  const [data, setData] = useState<IUser>({
     username: "",
     password: "",
     email: "",
+    token: "",
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -144,6 +145,12 @@ function Register() {
               )}
             </div>
           </form>
+          <p className="text-blue-500 font-medium text-center">
+            Already Have An Account? Wanna{" "}
+            <Link to="/login" className="underline">
+              Login
+            </Link>
+          </p>
         </div>
       </div>
     </div>
