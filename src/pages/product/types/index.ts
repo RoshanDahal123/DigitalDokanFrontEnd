@@ -9,7 +9,8 @@ export interface IProduct {
   productName: string;
   productDescription: string;
   productTotalStock: string;
-  productDiscount: number | null;
+  productPrice: number;
+  productDiscount: number;
   productImageUrl: string;
   createdAt: string;
   updatedAt: string;
@@ -19,4 +20,5 @@ export interface IProduct {
 export interface IProducts {
   products: IProduct[];
   status: Status;
+  product: Iproduct | null;
 }

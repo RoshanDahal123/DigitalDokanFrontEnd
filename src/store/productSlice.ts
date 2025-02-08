@@ -7,6 +7,7 @@ import { API } from "../https";
 const initialState: IProducts = {
   products: [],
   status: Status.LOADING,
+  product: null,
 };
 
 const productSlice = createSlice({
