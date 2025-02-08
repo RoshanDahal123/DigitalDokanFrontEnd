@@ -32,7 +32,7 @@ function Navbar() {
                 ></path>
               </svg>
             </div>
-            Lander
+            DDookan...
           </div>
           <div className="flex mt-4 sm:mt-0">
             <a className="px-4" href="#features">
@@ -47,6 +47,9 @@ function Navbar() {
             <a className="px-4" href="#testimonials">
               Testimonials
             </a>
+            <Link to="/products" className="px-4">
+              Product{" "}
+            </Link>
           </div>
           <div className="hidden md:block">
             {isLoggedIn ? (

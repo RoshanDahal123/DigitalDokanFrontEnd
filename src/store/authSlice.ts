@@ -35,7 +35,7 @@ export default authSlice.reducer;
 export function registerUser(data: IUser) {
   return async function registerUserThunk(dispatch: AppDispatch) {
     try {
-      const response = await API.post("register", data);
+      const response = await API.post("auth/register", data);
       if (response.status === 201) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setUser(data));
@@ -52,7 +52,7 @@ export function registerUser(data: IUser) {
 export function loginUser(data: ILoginUser) {
   return async function loginUserThunk(dispatch: AppDispatch) {
     try {
-      const response = await API.post("login", data);
+      const response = await API.post("auth/login", data);
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         if (response.data.token) {
@@ -72,7 +72,7 @@ export function loginUser(data: ILoginUser) {
 export function forgotPassword(data: { email: string }) {
   return async function forgotPasswordThunk(dispatch: AppDispatch) {
     try {
-      const response = await API.post("forgot-password", data);
+      const response = await API.post("auth/forgot-password", data);
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
       } else {

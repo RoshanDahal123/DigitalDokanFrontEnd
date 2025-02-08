@@ -5,6 +5,7 @@ import store from "./store/store";
 import Register from "./pages/user/Register";
 import Login from "./pages/user/Login";
 import LandingPage from "./pages/home/LandingPage";
+import Product from "./pages/product/Product";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/products" element={<Product />} />
         </Routes>
       </BrowserRouter>
     </Provider>
