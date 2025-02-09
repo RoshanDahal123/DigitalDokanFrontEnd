@@ -1,11 +1,8 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../store/hook";
-
+import { setAge, setName } from "../../store/userSlice";
 import { registerUser } from "../../store/authSlice";
-import { Status } from "../../globals/type";
-import { IAuthState } from "./types";
-import { useNavigate } from "react-router-dom";
 
 /**
  * Register component handles the user registration process.
@@ -25,12 +22,6 @@ import { useNavigate } from "react-router-dom";
  */
 function Register() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const { status } = useAppSelector(
-    (state: { auth: IAuthState }) => state.auth
-  );
-  console.log(status);
   const [data, setData] = useState({
     username: "",
     password: "",
@@ -40,26 +31,17 @@ function Register() {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
-    setLoading(false);
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    setLoading(true);
     e.preventDefault();
+    console.log(data);
     dispatch(registerUser(data));
   };
-  useEffect(() => {
-    if (status === Status.SUCCESS) {
-      navigate("/login");
-    } else if (status === Status.ERROR) {
-      alert("Something went wrong");
-    }
-  }, [status, navigate]);
-
   return (
     <div className="bg-gray-100 flex h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
-        <div className="bg-white shadow-md rounded-md p-6 ">
+        <div className="bg-white shadow-md rounded-md p-6  dark:bg-gray-900">
           <img
             className="mx-auto h-12 w-auto"
             src="https://www.svgrepo.com/show/499664/user-happy.svg"
@@ -83,7 +65,7 @@ function Register() {
                   name="username"
                   type="username"
                   required
-                  className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm "
+                  className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm dark:text-white"
                   onChange={handleChange}
                 />
               </div>
@@ -127,22 +109,32 @@ function Register() {
               </div>
             </div>
 
+            {/* <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Confirm Password
+              </label>
+              <div className="mt-1">
+                <input
+                  name="confirm_password"
+                  type="password"
+                  autoComplete="confirm-password"
+                  required
+                  className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
+                  onChange={handleChange}
+                />
+              </div>
+            </div> */}
+
             <div>
-              {loading ? (
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md border border-transparent bg-sky-400 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-opacity-75 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2"
-                >
-                  Loading...
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md border border-transparent bg-sky-400 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-opacity-75 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2"
-                >
-                  Register
-                </button>
-              )}
+              <button
+                type="submit"
+                className="flex w-full justify-center rounded-md border border-transparent bg-sky-400 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-opacity-75 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2"
+              >
+                Register Account
+              </button>
             </div>
           </form>
         </div>

@@ -1,11 +1,14 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
-import { useAppDispatch } from "../../store/hook";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
 
 import { loginUser } from "../../store/authSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
+  const reduxToken = useAppSelector((store) => store.auth.user.token);
+  const localStorageToken = localStorage.getItem("token");
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [data, setData] = useState({
     email: "",
@@ -21,6 +24,13 @@ function Login() {
     e.preventDefault();
     dispatch(loginUser(data));
   };
+
+  useEffect(() => {
+    if (reduxToken && localStorageToken && reduxToken === localStorageToken) {
+      navigate("/");
+    }
+  }, [reduxToken, localStorageToken, navigate]);
+
   return (
     <div className="bg-gray-100 flex h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
@@ -46,8 +56,8 @@ function Login() {
               <div className="mt-1">
                 <input
                   name="email"
-                  type="email-address"
-                  autoComplete="email-address"
+                  type="email"
+                  autoComplete="email"
                   required
                   className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
                   onChange={handleChange}
@@ -66,7 +76,7 @@ function Login() {
                 <input
                   name="password"
                   type="password"
-                  autoComplete="password"
+                  autoComplete="current-password"
                   required
                   className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
                   onChange={handleChange}
