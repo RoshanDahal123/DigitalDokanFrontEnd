@@ -1,6 +1,20 @@
+import { useEffect } from "react";
+import { fetchProduct } from "../../store/productSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { useParams } from "react-router-dom";
+import store from "../../store/store";
+import Navbar from "../../globals/component/Navbar";
+
 function SingleProduct() {
+  const dispatch = useAppDispatch();
+  const { id } = useParams();
+  const { product } = useAppSelector((store) => store.products);
+  useEffect(() => {
+    if (id) dispatch(fetchProduct(id));
+  }, []);
   return (
     <div>
+      <Navbar />
       <div className="bg-gray-100 dark:bg-gray-800 py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row -mx-4">
@@ -8,7 +22,7 @@ function SingleProduct() {
               <div className="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4">
                 <img
                   className="w-full h-full object-cover"
-                  src="https://cdn.pixabay.com/photo/2020/05/22/17/53/mockup-5206355_960_720.jpg"
+                  src={`http://localhost:4000/${product?.productImageUrl}`}
                   alt="Product Image"
                 />
               </div>
@@ -27,12 +41,10 @@ function SingleProduct() {
             </div>
             <div className="md:flex-1 px-4">
               <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-                Product Name
+                {product?.productName}
               </h2>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed
-                ante justo. Integer euismod libero id mauris malesuada
-                tincidunt.
+                {product?.Category.categoryName}
               </p>
               <div className="flex mb-4">
                 <div className="mr-4">
@@ -40,7 +52,7 @@ function SingleProduct() {
                     Price:
                   </span>
                   <span className="text-gray-600 dark:text-gray-300">
-                    $29.99
+                    ${product?.productPrice}
                   </span>
                 </div>
                 <div>
@@ -90,14 +102,7 @@ function SingleProduct() {
                   Product Description:
                 </span>
                 <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  sed ante justo. Integer euismod libero id mauris malesuada
-                  tincidunt. Vivamus commodo nulla ut lorem rhoncus aliquet.
-                  Duis dapibus augue vel ipsum pretium, et venenatis sem
-                  blandit. Quisque ut erat vitae nisi ultrices placerat non eget
-                  velit. Integer ornare mi sed ipsum lacinia, non sagittis
-                  mauris blandit. Morbi fermentum libero vel nisl suscipit, nec
-                  tincidunt mi consectetur.
+                  {product?.productDescription}
                 </p>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IProduct, IProducts } from "../pages/product/types";
 import { Status } from "../globals/type";
-import { AppDispatch } from "./store";
+import { AppDispatch, RootState } from "./store";
 import { API } from "../https";
 
 const initialState: IProducts = {
@@ -20,9 +20,12 @@ const productSlice = createSlice({
     setStatus(state: IProducts, action: PayloadAction<Status>) {
       state.status = action.payload;
     },
+    setProduct(state: IProducts, action: PayloadAction<IProduct>) {
+      state.product = action.payload;
+    },
   },
 });
-export const { setProducts, setStatus } = productSlice.actions;
+export const { setProducts, setStatus, setProduct } = productSlice.actions;
 export default productSlice.reducer;
 
 export function fetchProducts() {
@@ -32,6 +35,35 @@ export function fetchProducts() {
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setProducts(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function fetchProduct(id: string) {
+  return async function fetchProductsThunk(
+    dispatch: AppDispatch,
+    getState: () => RootState
+  ) {
+    const store = getState();
+    const productExist = store.products.products.find(
+      (product: IProduct) => product.id === id
+    );
+    if (productExist) {
+      dispatch(setProduct(productExist));
+      dispatch(setStatus(Status.SUCCESS));
+    }
+
+    try {
+      const response = await API.get("product/" + id);
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setProduct(response.data.data[0]));
       } else {
         dispatch(setStatus(Status.ERROR));
       }
