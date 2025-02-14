@@ -34,19 +34,10 @@ function Navbar() {
             </div>
             DDookan...
           </div>
-          <div className="flex mt-4 sm:mt-0">
-            <a className="px-4" href="#features">
-              Features
-            </a>
-            <a className="px-4" href="#services">
-              Services
-            </a>
-            <a className="px-4" href="#stats">
-              Stats
-            </a>
-            <a className="px-4" href="#testimonials">
-              Testimonials
-            </a>
+          <div className="flex   mt-4 sm:mt-0 space-x-4">
+            <Link to="/cart">
+              Cart<sup>1</sup>{" "}
+            </Link>
             <Link to="/products" className="px-4">
               Product{" "}
             </Link>
