@@ -22,7 +22,7 @@ const Product = () => {
       >
         {products.length > 0 &&
           products.map((product) => {
-            return <Card product={product} />;
+            return <Card product={product} key={product.id} />;
           })}
       </section>
     </>

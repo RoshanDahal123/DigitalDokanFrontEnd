@@ -30,7 +30,7 @@ function Register() {
   const { status } = useAppSelector(
     (state: { auth: IAuthState }) => state.auth
   );
-  console.log(status);
+
   const [data, setData] = useState({
     username: "",
     password: "",

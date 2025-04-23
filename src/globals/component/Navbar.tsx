@@ -1,15 +1,34 @@
-import { Link } from "react-router-dom";
-import { useAppSelector } from "../../store/hook";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { useEffect, useState } from "react";
+import { fetchCartItems } from "../../store/cartSlice";
+import { logoutUser } from "../../store/authSlice";
 
 function Navbar() {
   const reduxToken = useAppSelector((store) => store.auth.user.token);
-  const localStorageToken = localStorage.getItem("token");
+  const { items } = useAppSelector((store) => store.cart);
+  const dispatch = useAppDispatch();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setIsLoggedIn(!!localStorageToken || !!reduxToken);
-  }, []);
+    const localStorageToken = localStorage.getItem("token");
+    const loginStatus = !!localStorageToken || !!reduxToken;
+    setIsLoggedIn(loginStatus);
+    // console.log(isLoggedIn);
+  }, [reduxToken]);
+  useEffect(() => {
+    if (isLoggedIn) {
+      dispatch(fetchCartItems());
+      // console.log(isLoggedIn);
+    }
+  }, [isLoggedIn]);
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    setIsLoggedIn(false);
+    navigate("/");
+  };
 
   return (
     <div>
@@ -32,26 +51,31 @@ function Navbar() {
                 ></path>
               </svg>
             </div>
-            DDookan...
+            <Link to="/">DDookan...</Link>
           </div>
           <div className="flex   mt-4 sm:mt-0 space-x-4">
-            <Link to="/cart">
-              Cart<sup>1</sup>{" "}
-            </Link>
             <Link to="/products" className="px-4">
-              Product{" "}
+              Product
             </Link>
           </div>
+
           <div className="hidden md:block">
             {isLoggedIn ? (
-              <Link to="/logout">
+              <>
+                <span className="mr-[10px]">
+                  {" "}
+                  <Link to="/my-cart" className="px-4">
+                    Cart<sup>{items.length > 0 ? items.length : 0}</sup>
+                  </Link>
+                </span>
                 <button
                   type="button"
                   className=" py-3 px-8 text-sm bg-teal-500 hover:bg-teal-600 rounded text-white mr-3 "
+                  onClick={handleLogout}
                 >
                   Logout
                 </button>
-              </Link>
+              </>
             ) : (
               <>
                 <Link to="/register">

@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { useParams } from "react-router-dom";
 
 import Navbar from "../../globals/component/Navbar";
+import { addToCart } from "../../store/cartSlice";
 
 function SingleProduct() {
   const dispatch = useAppDispatch();
@@ -12,6 +13,11 @@ function SingleProduct() {
   useEffect(() => {
     if (id) dispatch(fetchProduct(id));
   }, []);
+  const handleAddToCart = () => {
+    if (id) {
+      dispatch(addToCart(id));
+    }
+  };
   return (
     <div>
       <Navbar />
@@ -28,7 +34,10 @@ function SingleProduct() {
               </div>
               <div className="flex -mx-2 mb-4">
                 <div className="w-1/2 px-2">
-                  <button className="w-full bg-gray-900 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
+                  <button
+                    className="w-full bg-gray-900 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700"
+                    onClick={handleAddToCart}
+                  >
                     Add to Cart
                   </button>
                 </div>

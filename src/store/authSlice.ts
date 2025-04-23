@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IAuthState, ILoginUser, IUser, Status } from "../globals/type";
+
+import { IAuthState, ILoginUser, IUser } from "../pages/user/types";
+import { Status } from "../globals/type";
 
 import { AppDispatch } from "./store";
 import { API } from "../https";
@@ -27,9 +29,12 @@ const authSlice = createSlice({
     setToken(state: IAuthState, action: PayloadAction<string>) {
       state.user.token = action.payload;
     },
+    removeToken(state: IAuthState) {
+      state.user.token = null;
+    },
   },
 });
-export const { setUser, setStatus, setToken } = authSlice.actions;
+export const { setUser, setStatus, setToken, removeToken } = authSlice.actions;
 export default authSlice.reducer;
 
 export function registerUser(data: IUser) {
@@ -78,6 +83,19 @@ export function forgotPassword(data: { email: string }) {
       } else {
         dispatch(setStatus(Status.ERROR));
       }
+    } catch (error) {
+      console.log(error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function logoutUser() {
+  return async function logoutUserThunk(dispatch: AppDispatch) {
+    try {
+      dispatch(removeToken());
+      localStorage.removeItem("token");
+      dispatch(setStatus(Status.SUCCESS));
     } catch (error) {
       console.log(error);
       dispatch(setStatus(Status.ERROR));

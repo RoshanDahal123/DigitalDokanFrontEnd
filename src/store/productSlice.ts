@@ -34,6 +34,7 @@ export function fetchProducts() {
       const response = await API.get("product");
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
+        //response.data must be written for every response
         dispatch(setProducts(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
