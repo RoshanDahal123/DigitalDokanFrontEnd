@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Navbar from "../../globals/component/Navbar";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { IData, PaymentMethod } from "./types";
@@ -6,6 +6,7 @@ import { orderItem } from "../../store/orderSlice";
 
 function Checkout() {
   const { items } = useAppSelector((store) => store.cart);
+  const { khaltiUrl } = useAppSelector((store) => store.orders);
   const dispatch = useAppDispatch();
   const total = items.reduce(
     (total, item) => item.Product.productPrice * item.quantity + total,
@@ -22,10 +23,12 @@ function Checkout() {
     email: "",
     phoneNumber: "",
     state: "",
-    paymentMethod: PaymentMethod.COD,
+    paymentMethod: PaymentMethod.Cod,
     products: [],
   });
-
+  const [paymentMethod, setpaymentMethod] = useState<PaymentMethod>(
+    PaymentMethod.Cod
+  );
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setData({
@@ -52,6 +55,21 @@ function Checkout() {
     };
     await dispatch(orderItem(finalData));
   };
+
+  const handlePaymentMethod = (paymentData: PaymentMethod) => {
+    setpaymentMethod(paymentData);
+    setData({
+      ...data,
+      paymentMethod: paymentData,
+    });
+  };
+
+  useEffect(() => {
+    if (khaltiUrl) {
+      window.location.href = khaltiUrl;
+      return;
+    }
+  }, [khaltiUrl]);
   return (
     <>
       <Navbar />
@@ -196,55 +214,46 @@ function Checkout() {
                     />
                   </div>
                 </div>
-                <div>
+              </div>
+              <div>
+                <label htmlFor="paymentMethod">Payment Method : </label>
+                <select
+                  name=""
+                  id="paymentMethod"
+                  onChange={(e) =>
+                    handlePaymentMethod(e.target.value as PaymentMethod)
+                  }
+                >
+                  <option value={PaymentMethod.Cod}>COD</option>
+                  <option value={PaymentMethod.Khalti}>Khalti</option>
+                  <option value={PaymentMethod.Esewa}>Esewa</option>
+                </select>
+              </div>
+              <div className="flex gap-4 max-md:flex-col mt-8">
+                {paymentMethod === PaymentMethod.Cod && (
                   <button
-                    className="bg-teal-500 hover:cursor-pointer w-[100%] align-center text-center "
                     type="submit"
+                    className="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    Complete Purchase
+                    Pay on COD
                   </button>
-                </div>
-                {/* <div>
-                    <label htmlFor="paymentMethod">Payment Method : </label>
-                    <select
-                      name=""
-                      id="paymentMethod"
-                      onChange={(e) =>
-                        handlePaymentMethod(e.target.value as PaymentMethod)
-                      }
-                    >
-                      <option value={PaymentMethod.COD}>COD</option>
-                      <option value={PaymentMethod.Khalti}>Khalti</option>
-                      <option value={PaymentMethod.Esewa}>Esewa</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="flex gap-4 max-md:flex-col mt-8">
-                  {paymentMethod === PaymentMethod.COS && (
-                    <button
-                      type="submit"
-                      className="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      Pay on COD
-                    </button>
-                  )}
-                  {paymentMethod === PaymentMethod.Khalti && (
-                    <button
-                      type="submit"
-                      className="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-purple-600 hover:bg-purple-700 text-white"
-                    >
-                      Pay with Khalti
-                    </button>
-                  )}
-                  {paymentMethod === PaymentMethod.Esewa && (
-                    <button
-                      type="submit"
-                      className="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-green-600 hover:bg-green-700 text-white"
-                    >
-                      Pay with Esewa
-                    </button>
-                  )}
-                </div> */}
+                )}
+                {paymentMethod === PaymentMethod.Khalti && (
+                  <button
+                    type="submit"
+                    className="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    Pay with Khalti
+                  </button>
+                )}
+                {paymentMethod === PaymentMethod.Esewa && (
+                  <button
+                    type="submit"
+                    className="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    Pay with Esewa
+                  </button>
+                )}
               </div>
             </form>
           </div>

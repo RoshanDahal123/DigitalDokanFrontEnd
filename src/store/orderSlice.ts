@@ -37,6 +37,7 @@ export function orderItem(data: IData) {
       }
       if (response.data.url) {
         dispatch(setKhaltiUrl(response.data.url));
+        window.location.href = response.data.url;
       }
     } catch (error) {
       console.log(error);
