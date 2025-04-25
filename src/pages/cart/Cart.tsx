@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Navbar from "../../globals/component/Navbar";
 import {
   handleCartItemUpdate,
@@ -140,7 +141,7 @@ const Cart = () => {
                   <span className="font-semibold">Rs.{total}</span>
                 </div>
                 <button className="bg-teal-500 text-white py-2 px-4 rounded-lg mt-4 w-full">
-                  Checkout
+                  <Link to="/my-checkout">Checkout</Link>
                 </button>
               </div>
             </div>

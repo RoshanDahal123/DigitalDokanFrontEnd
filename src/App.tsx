@@ -8,6 +8,7 @@ import LandingPage from "./pages/home/LandingPage";
 import Product from "./pages/product/Product";
 import SingleProduct from "./pages/single-product/SingleProduct";
 import Cart from "./pages/cart/Cart";
+import Checkout from "./pages/checkout/Checkout";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/products" element={<Product />} />
           <Route path="/product/:id" element={<SingleProduct />} />
           <Route path="/my-cart" element={<Cart />} />
+          <Route path="/my-checkout" element={<Checkout />} />
         </Routes>
       </BrowserRouter>
     </Provider>
