@@ -8,17 +8,18 @@ function Checkout() {
   const { items } = useAppSelector((store) => store.cart);
   const { khaltiUrl } = useAppSelector((store) => store.orders);
   const dispatch = useAppDispatch();
-  const total = items.reduce(
+  const subTotal = items.reduce(
     (total, item) => item.Product.productPrice * item.quantity + total,
     0
   );
-
+  const shippingCost = 100;
+  const total = subTotal + shippingCost;
   const [data, setData] = useState<IData>({
     firstName: "",
     lastName: "",
     addressLine: "",
     city: "",
-    totalAmount: total,
+    totalAmount: 0,
     zipCode: "",
     email: "",
     phoneNumber: "",

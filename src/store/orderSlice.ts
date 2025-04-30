@@ -45,3 +45,41 @@ export function orderItem(data: IData) {
     }
   };
 }
+
+export function fetchMyOrders() {
+  return async function fetchMyOrdersThunk(dispatch: AppDispatch) {
+    try {
+      const response = await APIWITHTOKEN.get("/order");
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setItems(response.data.data));
+      }
+      if (response.data.url) {
+        dispatch(setKhaltiUrl(response.data.url));
+        window.location.href = response.data.url;
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function fetchMyOrderDetail(id: string) {
+  return async function fetchMyOrderDetailThunk(dispatch: AppDispatch) {
+    try {
+      const response = await APIWITHTOKEN.get("/order/" + id);
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setItems(response.data.data));
+      }
+      if (response.data.url) {
+        dispatch(setKhaltiUrl(response.data.url));
+        window.location.href = response.data.url;
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
