@@ -1,16 +1,25 @@
 import { useParams } from "react-router-dom";
 import Navbar from "../../globals/component/Navbar";
-import { fetchMyOrderDetail } from "../../store/orderSlice";
+import { cancelMyOrder, fetchMyOrderDetail } from "../../store/orderSlice";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { OrderStatus } from ".";
 
 const MyOrderDetail = () => {
   const { id } = useParams();
+  console.log(id);
   const dispatch = useAppDispatch();
-  const { items } = useAppSelector((store) => store.orders);
-  const { orderDetail } = useAppSelector((store) => store.orders);
-  // const orderId = orderDetail[0]?.orderId;
+  const { items, orderDetail } = useAppSelector((store) => store.orders);
 
+  const [data] = items.filter((order) => order.id === id);
+
+  console.log(orderDetail, "Items");
+
+  const handleCancelOrder = () => {
+    if (id) {
+      dispatch(cancelMyOrder(id));
+    }
+  };
   useEffect(() => {
     if (id) {
       dispatch(fetchMyOrderDetail(id));
@@ -21,6 +30,15 @@ const MyOrderDetail = () => {
       <Navbar />
 
       <div className="py-2 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
+        <div className="flex justify-start item-start space-y-2 flex-col">
+          <h1 className="text-3xl text-gray-800  lg:text-4xl font-semibold leading-7 lg:leading-9">
+            Order #{orderDetail[0]?.orderId}
+          </h1>
+          <p className="text-base dark:text-gray-300 font-medium leading-6 text-gray-600">
+            {new Date(orderDetail[0]?.createdAt).toLocaleDateString()}
+          </p>
+          <p>Order Status : {orderDetail[0]?.Order?.orderStatus}</p>
+        </div>
         <div className="flex justify-start item-start space-y-2 flex-col"></div>
         <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
           <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
@@ -151,9 +169,15 @@ const MyOrderDetail = () => {
                   <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4"></div>
                 </div>
                 <div className="flex w-full justify-center items-center md:justify-start md:items-start">
-                  <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 w-96 2xl:w-full text-base font-medium leading-4 text-gray-800">
-                    Cancel Order
-                  </button>
+                  {orderDetail[0]?.Order?.orderStatus !==
+                    OrderStatus.Cancelled && (
+                    <button
+                      className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 w-96 2xl:w-full text-base font-medium leading-4 text-gray-800"
+                      onClick={handleCancelOrder}
+                    >
+                      Cancel Order
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

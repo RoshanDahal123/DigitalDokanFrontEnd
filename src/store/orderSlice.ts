@@ -3,7 +3,7 @@ import { IData, IOrder, IOrderItems } from "../pages/checkout/types";
 import { Status } from "../globals/type";
 import { APIWITHTOKEN } from "../https";
 import { AppDispatch } from "./store";
-import { IOrderDetail } from "../pages/my-order-details";
+import { IOrderDetail, OrderStatus } from "../pages/my-order-details";
 
 const initialState: IOrder = {
   items: [],
@@ -27,12 +27,29 @@ const orderSlice = createSlice({
     setOrderDetails(state: IOrder, action: PayloadAction<IOrderDetail[]>) {
       state.orderDetail = action.payload;
     },
+    updateOrderStatusToCancel(
+      state: IOrder,
+      action: PayloadAction<{ orderId: string }>
+    ) {
+      const orderId = action.payload.orderId;
+
+      const data = state.orderDetail.find((order) => order.orderId === orderId);
+
+      if (data) {
+        data.Order.orderStatus = OrderStatus.Cancelled;
+      }
+    },
   },
 });
 
 export default orderSlice.reducer;
-const { setItems, setStatus, setKhaltiUrl, setOrderDetails } =
-  orderSlice.actions;
+const {
+  setItems,
+  setStatus,
+  setKhaltiUrl,
+  setOrderDetails,
+  updateOrderStatusToCancel,
+} = orderSlice.actions;
 
 export function orderItem(data: IData) {
   return async function orderItemThunk(dispatch: AppDispatch) {
@@ -83,6 +100,22 @@ export function fetchMyOrderDetail(id: string) {
       if (response.data.url) {
         dispatch(setKhaltiUrl(response.data.url));
         window.location.href = response.data.url;
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+export function cancelMyOrder(id: string) {
+  return async function cancelMyOrderThunk(dispatch: AppDispatch) {
+    try {
+      const response = await APIWITHTOKEN.patch("/order/cancel-order/" + id);
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(updateOrderStatusToCancel({ orderId: id }));
+      } else {
+        dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
       console.log(error);
