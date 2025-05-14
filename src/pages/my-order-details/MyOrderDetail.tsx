@@ -11,8 +11,6 @@ const MyOrderDetail = () => {
   const dispatch = useAppDispatch();
   const { items, orderDetail } = useAppSelector((store) => store.orders);
 
-  const [data] = items.filter((order) => order.id === id);
-
   console.log(orderDetail, "Items");
 
   const handleCancelOrder = () => {
