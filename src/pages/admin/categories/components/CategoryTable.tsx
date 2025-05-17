@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { deleteCategoryItem } from "../../../../store/adminCategorySlice";
 import { useAppDispatch } from "../../../../store/hook";
 import { ICategory } from "../../../product/types";
@@ -16,9 +16,17 @@ function CategoryTable({ categories }: { categories: ICategory[] }) {
       category.categoryName.toLowerCase().includes(searchItem.toLowerCase()) ||
       category.id.toLowerCase().includes(searchItem.toLowerCase())
   );
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
+  const openModal = useCallback(() => setIsModalOpen(true), []);
+  const closeModal = useCallback(() => setIsModalOpen(false), []);
+  //to check if the function is new instance
+  // const openModalRef = useRef<() => void | null>(null);
+  // if (openModalRef.current) {
+  //   console.log(
+  //     "funciton new instance create vay0!!",
+  //     openModalRef.current != openModal
+  //   );
+  //   openModalRef.current = openModal;
+  // }
   return (
     <>
       <div className="flex flex-col">
@@ -61,7 +69,7 @@ function CategoryTable({ categories }: { categories: ICategory[] }) {
                   type="text"
                   id="default-search"
                   className="block w-80 h-11 pr-5 pl-12 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-full placeholder-gray-400 focus:outline-none"
-                  placeholder="Search for company"
+                  placeholder="Search for Category ID or Name"
                 />
                 <button
                   className="bg-blue-500 text-white p-2 rounded"
@@ -114,7 +122,7 @@ function CategoryTable({ categories }: { categories: ICategory[] }) {
 
                           <td className=" p-5 ">
                             <div className="flex items-center gap-1">
-                              <button className="p-2  rounded-full  group transition-all duration-500  flex item-center">
+                              {/* <button className="p-2  rounded-full  group transition-all duration-500  flex item-center">
                                 <svg
                                   className="cursor-pointer"
                                   width={20}
@@ -129,7 +137,7 @@ function CategoryTable({ categories }: { categories: ICategory[] }) {
                                     fill="#818CF8"
                                   />
                                 </svg>
-                              </button>
+                              </button> */}
                               <button
                                 onClick={() => deleteCategory(category?.id)}
                                 className="p-2 rounded-full  group transition-all duration-500  flex item-center"
@@ -149,7 +157,7 @@ function CategoryTable({ categories }: { categories: ICategory[] }) {
                                   />
                                 </svg>
                               </button>
-                              <button className="p-2 rounded-full  group transition-all duration-500  flex item-center">
+                              {/* <button className="p-2 rounded-full  group transition-all duration-500  flex item-center">
                                 <svg
                                   width={20}
                                   height={20}
@@ -165,7 +173,7 @@ function CategoryTable({ categories }: { categories: ICategory[] }) {
                                     strokeLinecap="round"
                                   />
                                 </svg>
-                              </button>
+                              </button> */}
                             </div>
                           </td>
                         </tr>

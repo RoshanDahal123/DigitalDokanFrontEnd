@@ -13,7 +13,7 @@ import MyOrder from "./pages/myOrder/MyOrder";
 import MyOrderDetail from "./pages/my-order-details/MyOrderDetail";
 
 import Category from "./pages/admin/categories/Category";
-import AdminLayout from "./pages/admin/AdminLayout";
+import User from "./pages/admin/users/User";
 import AdminStats from "./pages/admin/stats/AdminStats";
 
 function App() {
@@ -32,6 +32,7 @@ function App() {
           <Route path="/my-orders/:id" element={<MyOrderDetail />} />
           <Route path="/admin" element={<AdminStats />} />
           <Route path="/admin/categories" element={<Category />} />
+          <Route path="/admin/users" element={<User />} />
         </Routes>
       </BrowserRouter>
     </Provider>
