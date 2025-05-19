@@ -1,20 +1,28 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { IProduct } from "../../../product/types";
+import ProductModal from "./ProductModal";
 
 const ProductTable = ({ products }: { products: IProduct[] }) => {
   console.log(products);
 
   const [searchItem, setSearchItem] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const filterProduct = products?.filter(
     (product) =>
       product?.productName.toLowerCase().includes(searchItem.toLowerCase()) ||
       product?.id.toLowerCase().includes(searchItem.toLowerCase())
   );
+  const openModal = useCallback(() => setIsModalOpen(true), []);
+  const closeModal = useCallback(() => setIsModalOpen(false), []);
+function deleteProduct() {
+  
+  dispatchEvent(deleteProduct(id:string));
+  console.log("delete");}
 
   return (
     <div className="flex flex-col">
       <div className=" overflow-x-auto">
-        {/* {isModalOpen && <Modal closeModal={closeModal} />} */}
+        {isModalOpen && <ProductModal closeModal={closeModal} />}
         <div className="min-w-full inline-block align-middle">
           <div className="relative  text-gray-500 focus-within:text-gray-900 mb-4">
             <div className="absolute inset-y-0 left-1 flex items-center pl-3 pointer-events-none ">
@@ -56,7 +64,7 @@ const ProductTable = ({ products }: { products: IProduct[] }) => {
               />
               <button
                 className="bg-blue-500 text-white p-2 rounded"
-                // onClick={openModal}
+                onClick={openModal}
               >
                 +Product
               </button>
@@ -140,7 +148,7 @@ const ProductTable = ({ products }: { products: IProduct[] }) => {
                         </td>
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                           <div className="flex items-center gap-1">
-                            <button className="p-2 rounded-full group transition-all duration-500 flex items-center">
+                            <button className="p-2 rounded-full group transition-all duration-500 flex items-center" onClick={deleteProduct}>
                               <svg
                                 className=""
                                 width={20}

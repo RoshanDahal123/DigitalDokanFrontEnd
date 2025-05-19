@@ -16,18 +16,18 @@ const Card: React.FC<ICardProp> = ({ product }) => {
           />
           <div className="px-4 py-3 w-72">
             <span className="text-gray-400 mr-3 uppercase text-xs">
-              {product.Category.categoryName}
+              {product?.Category?.categoryName}
             </span>
             <p className="text-lg font-bold text-black truncate block capitalize">
-              {product.productName}
+              {product?.productName}
             </p>
             <div className="flex items-center">
               <p className="text-lg font-semibold text-black cursor-auto my-3">
-                {product.productPrice}
+                {product?.productPrice}
               </p>
               <del>
                 <p className="text-sm text-gray-600 cursor-auto ml-2">
-                  {product.productDiscount}
+                  {product?.productDiscount}
                 </p>
               </del>
 

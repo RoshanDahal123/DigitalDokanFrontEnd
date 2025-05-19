@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { deleteCategoryItem } from "../../../../store/adminCategorySlice";
 import { useAppDispatch } from "../../../../store/hook";
 import { ICategory } from "../../../product/types";
