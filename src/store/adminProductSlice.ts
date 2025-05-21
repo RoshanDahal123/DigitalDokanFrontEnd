@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Status } from "../globals/type";
 
-import { AppDispatch } from "./store";
+import { AppDispatch, RootState } from "./store";
 import { API, APIWITHTOKEN } from "../https";
 
 interface IProduct {
@@ -17,10 +17,20 @@ interface IProduct {
 interface IProducts {
   products: IProduct[];
   status: Status;
+  product: IProduct;
 }
 const initialState: IProducts = {
   products: [],
   status: Status.LOADING,
+  product: {
+    productName: "",
+    productDescription: "",
+    productPrice: 0,
+    productTotalStock: 0,
+    productDiscount: 0,
+    categoryId: "",
+    productImageUrl: "",
+  },
 };
 
 const adminProductSlice = createSlice({
@@ -44,10 +54,18 @@ const adminProductSlice = createSlice({
     resetStatus: (state: IProducts) => {
       state.status = Status.LOADING;
     },
+    setProduct(state: IProducts, action: PayloadAction<IProduct>) {
+      state.product = action.payload;
+    },
   },
 });
-export const { setProducts, setStatus, setDeleteProduct, resetStatus } =
-  adminProductSlice.actions;
+export const {
+  setProducts,
+  setStatus,
+  setDeleteProduct,
+  resetStatus,
+  setProduct,
+} = adminProductSlice.actions;
 export default adminProductSlice.reducer;
 
 export function fetchProducts() {
@@ -87,6 +105,80 @@ export function addProduct(data: IProduct) {
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
       console.error("Error adding product:", error);
+    }
+  };
+}
+
+export function deleteProductItem(id: string) {
+  return async function deleteProductItemThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIWITHTOKEN.delete("/product/" + id);
+      if (response.status === 200) {
+        dispatch(setDeleteProduct(id));
+        dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+      console.error("Error deleting product:", error);
+    }
+  };
+}
+
+export function updateProduct(data: IProduct) {
+  return async function updateProductThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+
+    try {
+      const response = await APIWITHTOKEN.post("/product/" + data.id, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 200) {
+        //dispatch(fetchProducts());
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setProduct(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+      console.error("Error updating product:", error);
+    }
+  };
+}
+
+export function fetchProduct(id: string) {
+  return async function fetchProductsThunk(
+    dispatch: AppDispatch,
+    getState: () => RootState
+  ) {
+    const store = getState();
+    const productExist = store.products.products.find(
+      //@ts-ignore
+      (product: IProduct) => product.id === id
+    );
+    if (productExist) {
+      //@ts-ignore
+      dispatch(setProduct(productExist));
+      dispatch(setStatus(Status.SUCCESS));
+    }
+
+    try {
+      const response = await API.get("product/" + id);
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setProduct(response.data.data[0]));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setStatus(Status.ERROR));
     }
   };
 }

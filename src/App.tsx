@@ -17,6 +17,8 @@ import User from "./pages/admin/users/User";
 import AdminStats from "./pages/admin/stats/AdminStats";
 import AdminProduct from "./pages/admin/product/AdminProdcut";
 
+import SingleProductAdmin from "./pages/admin/product/SingleProductAdmin";
+
 function App() {
   return (
     <Provider store={store}>
@@ -35,6 +37,7 @@ function App() {
           <Route path="/admin/categories" element={<Category />} />
           <Route path="/admin/users" element={<User />} />
           <Route path="/admin/products" element={<AdminProduct />} />
+          <Route path="/admin/product/:id" element={<SingleProductAdmin />} />
         </Routes>
       </BrowserRouter>
     </Provider>

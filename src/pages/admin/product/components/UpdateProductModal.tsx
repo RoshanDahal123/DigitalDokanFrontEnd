@@ -1,7 +1,11 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store/hook";
 import { Status } from "../../../../globals/type";
-import { addProduct, resetStatus } from "../../../../store/adminProductSlice";
+import {
+  fetchProduct,
+  resetStatus,
+  updateProduct,
+} from "../../../../store/adminProductSlice";
 import { fetchCategories } from "../../../../store/adminCategorySlice";
 
 interface IProduct {
@@ -13,7 +17,14 @@ interface IProduct {
   categoryId: string;
   productImageUrl: File | string;
 }
-function ProductModal({ closeModal }: { closeModal: () => void }) {
+function UpdateProductModal({
+  handleClose,
+  id,
+}: {
+  handleClose: () => void;
+  id: string;
+}) {
+  const [submitted, setSubmitted] = useState(false);
   const [data, setData] = useState<IProduct>({
     productName: "",
     productDescription: "",
@@ -27,34 +38,51 @@ function ProductModal({ closeModal }: { closeModal: () => void }) {
   const { status } = useAppSelector((store) => store.adminProduct);
   const dispatch = useAppDispatch();
   const { items } = useAppSelector((store) => store.category);
+
+  // Fetch product using id prop
+  useEffect(() => {
+    if (id) dispatch(fetchProduct(id));
+  }, [id, dispatch]);
+
+  const { product } = useAppSelector((store) => store.adminProduct);
+  // Prepopulate form with fetched product data
+  useEffect(() => {
+    if (product) {
+      setData(product);
+    }
+  }, [product]);
+
   const handleProductChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setData((data) => ({
       ...data,
-
-      [name]: name === "productImageUrl" ? (e.target.files[0] as File) : value,
+      [name]: name === "productImageUrl" ? (e.target.files![0] as File) : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitted(true);
     setLoading(true);
     try {
-      dispatch(addProduct(data));
+      dispatch(updateProduct(data));
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Only close modal if the update submission has been made and status becomes SUCCESS
   useEffect(() => {
-    if (status === Status.SUCCESS) {
+    if (submitted && status === Status.SUCCESS) {
       setLoading(false);
-      closeModal();
+      handleClose();
       dispatch(resetStatus());
+      setSubmitted(false);
     }
-  }, [status]);
+  }, [status, submitted, handleClose, dispatch]);
+
   const handleCategory = () => {
     dispatch(fetchCategories());
   };
@@ -63,8 +91,7 @@ function ProductModal({ closeModal }: { closeModal: () => void }) {
     <>
       <div
         id="modal"
-        className="fixed inset-0 z-50 flex items-center justify-center
-        w-[100vw]"
+        className="fixed inset-0 z-50 flex items-center justify-center w-[100vw]"
       >
         <div className="fixed inset-0 bg-black/50" />{" "}
         <div className="relative w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-lg shadow-xl">
@@ -75,7 +102,7 @@ function ProductModal({ closeModal }: { closeModal: () => void }) {
             <button
               id="closeModalButton"
               className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              onClick={closeModal}
+              onClick={handleClose}
             >
               <svg
                 className="h-4 w-4 inline-block ml-2"
@@ -105,7 +132,6 @@ function ProductModal({ closeModal }: { closeModal: () => void }) {
                 </label>
                 <input
                   type="text"
-                  id="categoryName"
                   name="productName"
                   className="w-full mt-1 p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
                   placeholder="Earphones"
@@ -222,7 +248,7 @@ function ProductModal({ closeModal }: { closeModal: () => void }) {
                 <button
                   id="cancelButton"
                   className="px-4 py-2 my-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
-                  onClick={closeModal}
+                  onClick={handleClose}
                 >
                   Cancel
                 </button>
@@ -230,7 +256,7 @@ function ProductModal({ closeModal }: { closeModal: () => void }) {
                   id="submitUrlButton"
                   className="flex items-center my-4 justify-center px-4 py-2 text-sm font-medium text-white rounded-md bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 dark:from-indigo-500 dark:to-violet-500 dark:hover:from-indigo-600 dark:hover:to-violet-600"
                 >
-                  {loading ? "Adding.." : "Add"}
+                  {loading ? "Updating.." : "Update"}
                   <svg
                     className="h-4 w-4 inline-block ml-2"
                     xmlns="http://www.w3.org/2000/svg"
@@ -257,4 +283,4 @@ function ProductModal({ closeModal }: { closeModal: () => void }) {
   );
 }
 
-export default ProductModal;
+export default UpdateProductModal;

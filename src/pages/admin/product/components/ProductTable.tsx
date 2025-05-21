@@ -1,28 +1,56 @@
 import { useCallback, useState } from "react";
 import { IProduct } from "../../../product/types";
-import ProductModal from "./ProductModal";
+import ProductModal from "./AddProductModal";
+import UpdateProductModal from "./UpdateProductModal";
+
+import { useAppDispatch } from "../../../../store/hook";
+import {
+  deleteProductItem,
+  updateProduct,
+} from "../../../../store/adminProductSlice";
+import { Link } from "react-router-dom";
+import { LiaEditSolid } from "react-icons/lia";
 
 const ProductTable = ({ products }: { products: IProduct[] }) => {
-  console.log(products);
-
   const [searchItem, setSearchItem] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+    null
+  );
+
   const filterProduct = products?.filter(
     (product) =>
       product?.productName.toLowerCase().includes(searchItem.toLowerCase()) ||
       product?.id.toLowerCase().includes(searchItem.toLowerCase())
   );
+  const dispatch = useAppDispatch();
   const openModal = useCallback(() => setIsModalOpen(true), []);
   const closeModal = useCallback(() => setIsModalOpen(false), []);
-function deleteProduct() {
-  
-  dispatchEvent(deleteProduct(id:string));
-  console.log("delete");}
+  const handleClose = useCallback(() => {
+    setIsEdit(false);
+    setSelectedProductId(null);
+  }, []);
+  const deleteProduct = async (id: string) => {
+    if (id) dispatch(deleteProductItem(id));
+  };
 
+  const editProduct = async (id: string) => {
+    if (id) {
+      setSelectedProductId(id);
+      setIsEdit(true);
+    }
+  };
   return (
     <div className="flex flex-col">
       <div className=" overflow-x-auto">
         {isModalOpen && <ProductModal closeModal={closeModal} />}
+        {isEdit && selectedProductId && (
+          <UpdateProductModal
+            handleClose={handleClose}
+            id={selectedProductId}
+          />
+        )}
         <div className="min-w-full inline-block align-middle">
           <div className="relative  text-gray-500 focus-within:text-gray-900 mb-4">
             <div className="absolute inset-y-0 left-1 flex items-center pl-3 pointer-events-none ">
@@ -127,9 +155,12 @@ function deleteProduct() {
                         key={product?.id}
                         className="bg-white transition-all duration-500 hover:bg-gray-50"
                       >
-                        <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                          {product?.id}
-                        </td>
+                        <Link to={`/admin/product/${product?.id}`}>
+                          {" "}
+                          <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                            {product?.id}
+                          </td>
+                        </Link>
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                           {product?.productName}
                         </td>
@@ -148,7 +179,10 @@ function deleteProduct() {
                         </td>
                         <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                           <div className="flex items-center gap-1">
-                            <button className="p-2 rounded-full group transition-all duration-500 flex items-center" onClick={deleteProduct}>
+                            <button
+                              className="p-2 rounded-full group transition-all duration-500 flex items-center cursor-pointer"
+                              onClick={() => deleteProduct(product?.id)}
+                            >
                               <svg
                                 className=""
                                 width={20}
@@ -164,6 +198,11 @@ function deleteProduct() {
                                 />
                               </svg>
                             </button>
+                            <LiaEditSolid
+                              className="text-green-700 font-bold
+                              text-2xl cursor-pointer"
+                              onClick={() => editProduct(product?.id)}
+                            />
                           </div>
                         </td>
                       </tr>
