@@ -18,6 +18,7 @@ import AdminStats from "./pages/admin/stats/AdminStats";
 import AdminProduct from "./pages/admin/product/AdminProdcut";
 
 import SingleProductAdmin from "./pages/admin/product/SingleProductAdmin";
+import AdminOrder from "./pages/admin/orders/AdminOrder";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <Route path="/admin/users" element={<User />} />
           <Route path="/admin/products" element={<AdminProduct />} />
           <Route path="/admin/product/:id" element={<SingleProductAdmin />} />
+          <Route path="/admin/orders" element={<AdminOrder />} />
         </Routes>
       </BrowserRouter>
     </Provider>
