@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Status } from "../globals/type";
 
 import { AppDispatch, RootState } from "./store";
-import { API, APIWITHTOKEN } from "../https";
+import { API, APIWITHADMINTOKEN } from "../https";
 
 interface IProduct {
   productName: string;
@@ -91,7 +91,7 @@ export function addProduct(data: IProduct) {
   return async function addProductThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await APIWITHTOKEN.post("/product", data, {
+      const response = await APIWITHADMINTOKEN.post("/product", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -113,7 +113,7 @@ export function deleteProductItem(id: string) {
   return async function deleteProductItemThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await APIWITHTOKEN.delete("/product/" + id);
+      const response = await APIWITHADMINTOKEN.delete("/product/" + id);
       if (response.status === 200) {
         dispatch(setDeleteProduct(id));
         dispatch(setStatus(Status.SUCCESS));
@@ -132,11 +132,15 @@ export function updateProduct(data: IProduct) {
     dispatch(setStatus(Status.LOADING));
 
     try {
-      const response = await APIWITHTOKEN.post("/product/" + data.id, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await APIWITHADMINTOKEN.post(
+        "/product/" + data.id,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (response.status === 200) {
         //dispatch(fetchProducts());

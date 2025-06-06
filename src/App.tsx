@@ -19,6 +19,7 @@ import AdminProduct from "./pages/admin/product/AdminProdcut";
 
 import SingleProductAdmin from "./pages/admin/product/SingleProductAdmin";
 import AdminOrder from "./pages/admin/orders/AdminOrder";
+import AdminOrderDetail from "./pages/admin/order-details/AdminOrderDetails";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="/admin/products" element={<AdminProduct />} />
           <Route path="/admin/product/:id" element={<SingleProductAdmin />} />
           <Route path="/admin/orders" element={<AdminOrder />} />
+          <Route path="/admin/order/:id" element={<AdminOrderDetail />} />
         </Routes>
       </BrowserRouter>
     </Provider>

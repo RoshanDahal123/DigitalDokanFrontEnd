@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Status } from "../globals/type";
 import { AppDispatch } from "./store";
-import { APIWITHTOKEN } from "../https";
+import { APIWITHADMINTOKEN } from "../https";
 
 export interface IUser {
   id: string;
@@ -44,7 +44,7 @@ export function fetchUsers() {
   return async function fetchUsersThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await APIWITHTOKEN.get("/auth/users");
+      const response = await APIWITHADMINTOKEN.get("/auth/users");
       const data = response.data.data;
       if (response.status === 200) {
         dispatch(setAdminUser(data));
@@ -63,7 +63,7 @@ export function fetchUsers() {
 export function deleteUserById(id: string) {
   return async function deleteUserByIdThunk(dispatch: AppDispatch) {
     try {
-      const response = await APIWITHTOKEN.delete("/auth/users/" + id);
+      const response = await APIWITHADMINTOKEN.delete("/auth/users/" + id);
       if (response.status === 200) {
         dispatch(setRemoveUser(id));
       } else {

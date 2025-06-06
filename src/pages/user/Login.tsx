@@ -8,6 +8,9 @@ import { Link, useNavigate } from "react-router-dom";
 function Login() {
   const reduxToken = useAppSelector((store) => store.auth.user.token);
   const localStorageToken = localStorage.getItem("token");
+  const localStorageAdminToken = localStorage.getItem("adminToken");
+  const isAdmin =
+    localStorageAdminToken && reduxToken === localStorageAdminToken;
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [data, setData] = useState({
@@ -30,6 +33,11 @@ function Login() {
       navigate("/");
     }
   }, [reduxToken, localStorageToken, navigate]);
+  useEffect(() => {
+    if (isAdmin) {
+      navigate("/admin");
+    }
+  }, [isAdmin, navigate]);
 
   return (
     <div className="bg-gray-100 flex h-screen items-center justify-center px-4 sm:px-6 lg:px-8">

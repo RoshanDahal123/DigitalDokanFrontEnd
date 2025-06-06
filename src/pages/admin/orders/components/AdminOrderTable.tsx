@@ -106,7 +106,7 @@ const AdminOrderTable = ({ orders }: { orders: IAdminOrder[] }) => {
                         key={order?.id}
                         className="bg-white transition-all duration-500 hover:bg-gray-50"
                       >
-                        <Link to={`/admin/product/${order?.id}`}>
+                        <Link to={`/admin/order/${order?.id}`}>
                           {" "}
                           <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                             {order?.id}

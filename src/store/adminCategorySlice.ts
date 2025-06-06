@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Status } from "../globals/type";
 import { AppDispatch } from "./store";
-import { API, APIWITHTOKEN } from "../https";
+import { API, APIWITHADMINTOKEN } from "../https";
 
 interface ICategory {
   id: string;
@@ -76,7 +76,7 @@ export function fetchCategories() {
 export function deleteCategoryItem(id: string) {
   return async function deleteCategoryThunk(dispatch: AppDispatch) {
     try {
-      const response = await APIWITHTOKEN.delete("/category/" + id);
+      const response = await APIWITHADMINTOKEN.delete("/category/" + id);
       if (response.status === 200) {
         dispatch(setDeleteCategoryItem(id));
         dispatch(setStatus(Status.SUCCESS));
@@ -92,7 +92,7 @@ export function deleteCategoryItem(id: string) {
 export function addCategoryItem(categoryName: string) {
   return async function addCategoryThunk(dispatch: AppDispatch) {
     try {
-      const response = await APIWITHTOKEN.post("/category", {
+      const response = await APIWITHADMINTOKEN.post("/category", {
         categoryName,
       });
       if (response.status === 200) {

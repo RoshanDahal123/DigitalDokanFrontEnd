@@ -18,7 +18,7 @@ const Cart = () => {
   };
 
   const subTotal = items.reduce(
-    (total, item) => item.Product.productPrice * item.quantity + total,
+    (total, item) => item?.Product?.productPrice * item?.quantity + total,
     0
   );
 
@@ -51,17 +51,17 @@ const Cart = () => {
                     {items.length > 0 &&
                       items.map((item) => {
                         return (
-                          <tr key={item.id}>
+                          <tr key={item?.id}>
                             <td className="py-4">
                               <div className="flex items-center">
                                 <img
                                   className="h-16 w-16 mr-4"
-                                  src={`http://localhost:4000/${item.Product?.productImageUrl}`}
+                                  src={`http://localhost:4000/${item?.Product?.productImageUrl}`}
                                   alt="Product image"
                                 />
                                 <span className="font-semibold">
                                   {" "}
-                                  {item.Product.productName}
+                                  {item?.Product?.productName}
                                 </span>
                               </div>
                             </td>
@@ -74,8 +74,8 @@ const Cart = () => {
                                   className="border rounded-md py-2 px-4 mr-2"
                                   onClick={() =>
                                     handleUpdate(
-                                      item.Product.id,
-                                      item.quantity - 1
+                                      item?.Product?.id,
+                                      item?.quantity - 1
                                     )
                                   }
                                 >
@@ -88,8 +88,8 @@ const Cart = () => {
                                   className="border rounded-md py-2 px-4 ml-2"
                                   onClick={() =>
                                     handleUpdate(
-                                      item.Product.id,
-                                      item.quantity + 1
+                                      item?.Product.id,
+                                      item?.quantity + 1
                                     )
                                   }
                                 >
@@ -105,7 +105,9 @@ const Cart = () => {
                               <div className="flex items-center">
                                 <button
                                   className="border rounded-md py-2 px-4 mr-2 bg-red-500 hover:bg-red-700"
-                                  onClick={() => handleDelete(item.Product.id)}
+                                  onClick={() =>
+                                    handleDelete(item?.Product?.id)
+                                  }
                                 >
                                   X
                                 </button>

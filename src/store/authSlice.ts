@@ -60,7 +60,11 @@ export function loginUser(data: ILoginUser) {
       const response = await API.post("auth/login", data);
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
-        if (response.data.token) {
+
+        if (response.data.user.role === "admin" && response.data.token) {
+          localStorage.setItem("adminToken", response.data.token);
+          dispatch(setToken(response.data.token));
+        } else if (response.data.user.role === "user" && response.data.token) {
           localStorage.setItem("token", response.data.token);
           dispatch(setToken(response.data.token));
         }

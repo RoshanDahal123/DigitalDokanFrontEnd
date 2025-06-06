@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Status } from "../globals/type";
 import { AppDispatch } from "./store";
-import { APIWITHTOKEN } from "../https";
-import { OrderStatus } from "../pages/my-order-details";
+import { APIWITHADMINTOKEN } from "../https";
+import { IOrderDetail, OrderStatus } from "../pages/my-order-details";
 
 export interface IAdminOrder {
   id: string;
@@ -17,10 +17,12 @@ export interface IAdminPayment {
 export interface IOrderInitialState {
   items: IAdminOrder[];
   status: Status;
+  orderDetail: IOrderDetail[];
 }
 const initialState: IOrderInitialState = {
   items: [],
   status: Status.LOADING,
+  orderDetail: [],
 };
 const adminOrderSlice = createSlice({
   name: "order",
@@ -28,6 +30,12 @@ const adminOrderSlice = createSlice({
   reducers: {
     setItems(state: IOrderInitialState, action: PayloadAction<IAdminOrder[]>) {
       state.items = action.payload;
+    },
+    setOrderDetails(
+      state: IOrderInitialState,
+      action: PayloadAction<IOrderDetail[]>
+    ) {
+      state.orderDetail = action.payload;
     },
     setStatus(state: IOrderInitialState, action: PayloadAction<Status>) {
       state.status = action.payload;
@@ -39,13 +47,14 @@ const adminOrderSlice = createSlice({
   },
 });
 
-export const { setItems, setStatus, resetStatus } = adminOrderSlice.actions;
+export const { setItems, setStatus, resetStatus, setOrderDetails } =
+  adminOrderSlice.actions;
 export default adminOrderSlice.reducer;
 
 export function fetchAllOrder() {
   return async function fetchAllOrderThunk(dispatch: AppDispatch) {
     try {
-      const response = await APIWITHTOKEN.get("/order/all");
+      const response = await APIWITHADMINTOKEN.get("/order/all");
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setItems(response.data.data));
@@ -59,18 +68,24 @@ export function fetchAllOrder() {
   };
 }
 
-// export function deleteCategoryItem(id: string) {
-//   return async function deleteCategoryThunk(dispatch: AppDispatch) {
-//     try {
-//       const response = await APIWITHTOKEN.delete("/category/" + id);
-//       if (response.status === 200) {
-//         dispatch(setDeleteCategoryItem(id));
-//         dispatch(setStatus(Status.SUCCESS));
-//       } else {
-//         dispatch(setStatus(Status.ERROR));
-//       }
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-// }
+export function fetchAdminOrderDetail(id: string) {
+  return async function fetchAdminOrderDetailThunk(dispatch: AppDispatch) {
+    try {
+      const response = await APIWITHADMINTOKEN.get("/order/" + id);
+
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        console.log(
+          "this is the response of the order details",
+          response.data.data
+        );
+        dispatch(setOrderDetails(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}

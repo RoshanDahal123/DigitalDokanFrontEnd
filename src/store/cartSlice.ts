@@ -42,10 +42,18 @@ const cartSlice = createSlice({
         state.items.splice(index, 1);
       }
     },
+    clearCart(state) {
+      state.items = [];
+    },
   },
 });
-export const { setItem, setStatus, setUpdateCartItem, setDeleteCartItem } =
-  cartSlice.actions;
+export const {
+  setItem,
+  setStatus,
+  setUpdateCartItem,
+  setDeleteCartItem,
+  clearCart,
+} = cartSlice.actions;
 export default cartSlice.reducer;
 
 export function addToCart(productId: string) {

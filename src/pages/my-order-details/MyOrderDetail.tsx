@@ -9,7 +9,7 @@ const MyOrderDetail = () => {
   const { id } = useParams();
   console.log(id);
   const dispatch = useAppDispatch();
-  const { items, orderDetail } = useAppSelector((store) => store.orders);
+  const { orderDetail } = useAppSelector((store) => store.orders);
 
   console.log(orderDetail, "Items");
 

@@ -4,14 +4,18 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { IData, PaymentMethod } from "./types";
 import { orderItem } from "../../store/orderSlice";
 
+import { clearCart } from "../../store/cartSlice";
+
 function Checkout() {
   const { items } = useAppSelector((store) => store.cart);
+  console.log(items);
   const { khaltiUrl } = useAppSelector((store) => store.orders);
   const dispatch = useAppDispatch();
   const subTotal = items.reduce(
     (total, item) => item.Product.productPrice * item.quantity + total,
     0
   );
+
   const shippingCost = 100;
   const total = subTotal + shippingCost;
   const [data, setData] = useState<IData>({
@@ -55,6 +59,7 @@ function Checkout() {
       totalAmount: total,
     };
     await dispatch(orderItem(finalData));
+    await dispatch(clearCart());
   };
 
   const handlePaymentMethod = (paymentData: PaymentMethod) => {
