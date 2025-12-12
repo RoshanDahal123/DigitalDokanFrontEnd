@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../globals/component/Navbar";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { fetchMyOrders } from "../../store/orderSlice";
+import {
+  fetchMyOrders,
+  updateOrderStatusinSlice,
+} from "../../store/orderSlice";
 import { Link } from "react-router-dom";
+
+import { socket } from "../../App";
+import { OrderStatus } from "../my-order-details";
 
 const MyOrder = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +25,16 @@ const MyOrder = () => {
   useEffect(() => {
     dispatch(fetchMyOrders());
   }, []);
+
+  useEffect(() => {
+    socket.on(
+      "statusUpdated",
+      (data: { userId: string; orderId: string; status: OrderStatus }) => {
+        console.log("Order status updated:", data);
+        dispatch(updateOrderStatusinSlice(data));
+      }
+    );
+  }, [socket]);
   return (
     <>
       <Navbar />

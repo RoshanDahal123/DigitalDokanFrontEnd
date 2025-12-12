@@ -1,9 +1,9 @@
-import { IProduct } from "../../../product/types";
+// import { IProduct } from "../../../product/types";
 
-import { useAppDispatch } from "../../../../store/hook";
+// import { useAppDispatch } from "../../../../store/hook";
 
 import { Link } from "react-router-dom";
-import { LiaEditSolid } from "react-icons/lia";
+// import { LiaEditSolid } from "react-icons/lia";
 import { useState } from "react";
 import { IAdminOrder } from "../../../../store/adminOrderSlice";
 
@@ -15,7 +15,7 @@ const AdminOrderTable = ({ orders }: { orders: IAdminOrder[] }) => {
       order?.id.toLowerCase().includes(searchItem.toLowerCase()) ||
       order?.orderStatus.toLowerCase().includes(searchItem.toLowerCase())
   );
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   return (
     <div className="flex flex-col">

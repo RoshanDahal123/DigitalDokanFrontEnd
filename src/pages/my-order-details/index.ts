@@ -35,6 +35,8 @@ export interface IOrderDetail {
       paymentMethod: PaymentMethod;
       paymentStatus: PaymentStatus;
     };
+    userId: string;
+    zipCode: string;
   };
   Product: {
     productImageUrl: string;

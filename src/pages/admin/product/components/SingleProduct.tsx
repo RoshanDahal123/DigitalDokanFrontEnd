@@ -1,6 +1,8 @@
 import { IProduct } from "../../../product/types";
 
 function SingleProduct({ product }: { product: IProduct }) {
+  console.log(product);
+
   return (
     <div>
       <div className="bg-gray-100 dark:bg-gray-800 py-8">

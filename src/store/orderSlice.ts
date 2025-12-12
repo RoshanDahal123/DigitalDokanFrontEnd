@@ -39,16 +39,32 @@ const orderSlice = createSlice({
         data.Order.orderStatus = OrderStatus.Cancelled;
       }
     },
+    updateOrderStatusinSlice(
+      state: IOrder,
+      action: PayloadAction<{
+        status: OrderStatus;
+        userId: string;
+        orderId: string;
+      }>
+    ) {
+      const { status, orderId } = action.payload;
+      const updateOrder = state.items.map((order) =>
+        order.id == orderId ? { ...order, orderStatus: status } : order
+      );
+      console.log(updateOrder, "UO");
+      state.items = updateOrder;
+    },
   },
 });
 
 export default orderSlice.reducer;
-const {
+export const {
   setItems,
   setStatus,
   setKhaltiUrl,
   setOrderDetails,
   updateOrderStatusToCancel,
+  updateOrderStatusinSlice,
 } = orderSlice.actions;
 
 export function orderItem(data: IData) {

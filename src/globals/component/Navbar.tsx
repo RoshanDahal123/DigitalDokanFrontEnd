@@ -14,7 +14,9 @@ function Navbar() {
 
   useEffect(() => {
     const localStorageToken = localStorage.getItem("token");
-    const loginStatus = !!localStorageToken || !!reduxToken;
+    const adminLocalStorageToken = localStorage.getItem("adminToken");
+    const loginStatus =
+      !!localStorageToken || !!reduxToken || !!adminLocalStorageToken;
     setIsLoggedIn(loginStatus);
 
     // console.log(isLoggedIn);

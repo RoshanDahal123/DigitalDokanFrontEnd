@@ -2,27 +2,35 @@ import { useParams } from "react-router-dom";
 import AdminLayout from "../AdminLayout";
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
 import { fetchAdminOrderDetail } from "../../../store/adminOrderSlice";
-import { useEffect } from "react";
-import { OrderStatus } from "../../my-order-details";
+import { ChangeEvent, useEffect, useState } from "react";
+import { socket } from "../../../App";
 
 const AdminOrderDetail = () => {
   const { id } = useParams();
-  console.log(id);
+
   const dispatch = useAppDispatch();
   const { orderDetail } = useAppSelector((store) => store.order);
-
-  console.log(orderDetail, "Items");
-
-  // const handleCancelOrder = () => {
-  //   if (id) {
-  //     dispatch(cancelMyOrder(id));
-  //   }
-  // };
+  const [handleOrderStatus, sethandleOrderStatus] = useState<boolean>(false);
   useEffect(() => {
     if (id) {
       dispatch(fetchAdminOrderDetail(id));
     }
   }, []);
+  const handleOrderStatusChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (id) {
+      socket.emit("updateOrderStatus", {
+        status: e.target.value,
+        orderId: id,
+        userId: orderDetail[0]?.Order?.userId,
+      });
+      sethandleOrderStatus(true);
+    }
+  };
+  useEffect(() => {
+    dispatch(fetchAdminOrderDetail(id!));
+    sethandleOrderStatus(false);
+  }, [handleOrderStatus]);
+
   return (
     <AdminLayout>
       <>
@@ -163,18 +171,38 @@ const AdminOrderDetail = () => {
                         {orderDetail[0]?.Order?.state}
                       </p>
                     </div>
-                    <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4"></div>
                   </div>
-                  <div className="flex w-full justify-center items-center md:justify-start md:items-start">
-                    {orderDetail[0]?.Order?.orderStatus !==
-                      OrderStatus.Cancelled && (
-                      <button
-                        className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 w-96 2xl:w-full text-base font-medium leading-4 text-gray-800"
-                        // onClick={handleCancelOrder}
+                  <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4">
+                    {/* <div className="flex w-full justify-center items-center md:justify-start md:items-start">
+                      <label htmlFor="">Change Payment Status</label>
+                      <select
+                        name=""
+                        id=""
+                        className="w-full md:w-48 lg:w-64 xl:w-72 bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       >
-                        Cancel Order
-                      </button>
-                    )}
+                        <option value="paid">paid</option>
+                        <option value="unpaid">unpaid</option>
+                      </select>
+                    </div> */}
+
+                    <div className="flex w-full justify-center items-center md:justify-start md:items-start">
+                      <label htmlFor="" className="text-gray-900 font-bold  ">
+                        {" "}
+                        Change Order Status
+                      </label>
+                      <select
+                        name="changeOrderStatus"
+                        className="w-full md:w-48 lg:w-64 xl:w-72 bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        id=""
+                        onChange={handleOrderStatusChange}
+                      >
+                        <option value="pending">pending</option>
+                        <option value="delivered">delivered</option>
+                        <option value="ontheway">ontheway</option>
+                        <option value="preparation">preparation</option>
+                        <option value="cancelled">cancelled</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>

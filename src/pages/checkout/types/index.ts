@@ -34,7 +34,6 @@ export interface IData {
   addressLine: string;
   state: string;
   city: string;
-  zipCode: string;
   totalAmount: number;
   paymentMethod: PaymentMethod;
   products: IProduct[];

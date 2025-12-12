@@ -64,7 +64,10 @@ export function loginUser(data: ILoginUser) {
         if (response.data.user.role === "admin" && response.data.token) {
           localStorage.setItem("adminToken", response.data.token);
           dispatch(setToken(response.data.token));
-        } else if (response.data.user.role === "user" && response.data.token) {
+        } else if (
+          response.data.user.role === "customer" &&
+          response.data.token
+        ) {
           localStorage.setItem("token", response.data.token);
           dispatch(setToken(response.data.token));
         }

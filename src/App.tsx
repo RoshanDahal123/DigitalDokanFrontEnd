@@ -20,7 +20,14 @@ import AdminProduct from "./pages/admin/product/AdminProdcut";
 import SingleProductAdmin from "./pages/admin/product/SingleProductAdmin";
 import AdminOrder from "./pages/admin/orders/AdminOrder";
 import AdminOrderDetail from "./pages/admin/order-details/AdminOrderDetails";
+import { io } from "socket.io-client";
 
+export const socket = io("http://localhost:4000", {
+  auth: {
+    token:
+      localStorage.getItem("adminToken") || localStorage.getItem("token") || "",
+  },
+});
 function App() {
   return (
     <Provider store={store}>

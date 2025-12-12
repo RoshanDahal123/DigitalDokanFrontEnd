@@ -29,7 +29,7 @@ function Login() {
   };
 
   useEffect(() => {
-    if (reduxToken && localStorageToken && reduxToken === localStorageToken) {
+    if (reduxToken && localStorageToken === localStorageToken) {
       navigate("/");
     }
   }, [reduxToken, localStorageToken, navigate]);
