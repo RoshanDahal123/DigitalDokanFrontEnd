@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "./store";
-import { API, APIAuthenticated } from "../https";
+import { API, APIWITHTOKEN } from "../https";
 
 interface Wishlist {
   id: string;
@@ -58,7 +58,7 @@ export const fetchWishlist = () => {
   return async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
-      const response = await APIAuthenticated.get("/wishlist");
+      const response = await APIWITHTOKEN.get("/wishlist");
       if (response.status === 200) {
         dispatch(setWishlist(response.data.data));
       }
@@ -73,7 +73,7 @@ export const fetchWishlist = () => {
 export const addToWishlist = (productId: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await APIAuthenticated.post("/wishlist", { productId });
+      const response = await APIWITHTOKEN.post("/wishlist", { productId });
       if (response.status === 201) {
         dispatch(fetchWishlist());
       }
@@ -86,7 +86,7 @@ export const addToWishlist = (productId: string) => {
 export const removeFromWishlist = (productId: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await APIAuthenticated.delete(`/wishlist/${productId}`);
+      const response = await APIWITHTOKEN.delete(`/wishlist/${productId}`);
       if (response.status === 200) {
         dispatch(removeFromWishlistState(productId));
       }
@@ -99,7 +99,7 @@ export const removeFromWishlist = (productId: string) => {
 export const checkWishlistStatus = (productId: string) => {
   return async () => {
     try {
-      const response = await APIAuthenticated.get(`/wishlist/${productId}`);
+      const response = await APIWITHTOKEN.get(`/wishlist/${productId}`);
       return response.data.data.inWishlist;
     } catch (error) {
       return false;

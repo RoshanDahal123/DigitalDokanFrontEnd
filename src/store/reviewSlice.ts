@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "./store";
-import { API, APIAuthenticated } from "../https";
+import { API, APIWITHTOKEN } from "../https";
 
 interface Review {
   id: string;
@@ -96,7 +96,7 @@ export const addReview = (data: {
 }) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await APIAuthenticated.post("/review", data);
+      const response = await APIWITHTOKEN.post("/review", data);
       if (response.status === 201 || response.status === 200) {
         dispatch(fetchProductReviews(data.productId));
         dispatch(fetchUserProductReview(data.productId));
@@ -112,7 +112,7 @@ export const addReview = (data: {
 export const fetchUserProductReview = (productId: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await APIAuthenticated.get(
+      const response = await APIWITHTOKEN.get(
         `/review/user-product/${productId}`
       );
       if (response.status === 200) {
@@ -127,7 +127,7 @@ export const fetchUserProductReview = (productId: string) => {
 export const deleteReview = (reviewId: string, productId: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await APIAuthenticated.delete(`/review/${reviewId}`);
+      const response = await APIWITHTOKEN.delete(`/review/${reviewId}`);
       if (response.status === 200) {
         dispatch(fetchProductReviews(productId));
         dispatch(setUserProductReview(null));

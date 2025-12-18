@@ -9,8 +9,25 @@ export interface IUser {
 export interface IAuthState {
   user: IUser;
   status: Status;
+  error: string | null;
+  successMessage: string | null;
 }
 export interface ILoginUser {
   email: string;
   password: string;
+}
+
+export interface IForgotPassword {
+  email: string;
+}
+
+export interface IVerifyOtp {
+  email: string;
+  otp: string;
+}
+
+export interface IResetPassword {
+  email: string;
+  newPassword: string;
+  confirmPassword: string;
 }

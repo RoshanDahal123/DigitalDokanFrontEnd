@@ -14,6 +14,8 @@ const initialState: IAuthState = {
     token: null,
   },
   status: Status.LOADING,
+  error: null,
+  successMessage: null,
 };
 
 const authSlice = createSlice({
@@ -32,24 +34,63 @@ const authSlice = createSlice({
     removeToken(state: IAuthState) {
       state.user.token = null;
     },
+    setError(state: IAuthState, action: PayloadAction<string | null>) {
+      state.error = action.payload;
+    },
+    setSuccessMessage(state: IAuthState, action: PayloadAction<string | null>) {
+      state.successMessage = action.payload;
+    },
+    clearMessages(state: IAuthState) {
+      state.error = null;
+      state.successMessage = null;
+    },
   },
 });
-export const { setUser, setStatus, setToken, removeToken } = authSlice.actions;
+export const { setUser, setStatus, setToken, removeToken, setError, setSuccessMessage, clearMessages } = authSlice.actions;
 export default authSlice.reducer;
 
 export function registerUser(data: IUser) {
   return async function registerUserThunk(dispatch: AppDispatch) {
     try {
+      dispatch(clearMessages());
+      dispatch(setStatus(Status.LOADING));
+      
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(data.email || "")) {
+        dispatch(setError("Please enter a valid email address"));
+        dispatch(setStatus(Status.ERROR));
+        return;
+      }
+
+      // Password validation
+      if (!data.password || data.password.length < 8) {
+        dispatch(setError("Password must be at least 8 characters long"));
+        dispatch(setStatus(Status.ERROR));
+        return;
+      }
+
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!passwordRegex.test(data.password)) {
+        dispatch(setError("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"));
+        dispatch(setStatus(Status.ERROR));
+        return;
+      }
+
       const response = await API.post("auth/register", data);
       if (response.status === 201) {
         dispatch(setStatus(Status.SUCCESS));
+        dispatch(setSuccessMessage("Registration successful! Please check your email for verification instructions."));
         dispatch(setUser(data));
       } else {
         dispatch(setStatus(Status.ERROR));
+        dispatch(setError("Registration failed. Please try again."));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       dispatch(setStatus(Status.ERROR));
+      const errorMessage = error.response?.data?.message || "Registration failed. Please try again later.";
+      dispatch(setError(errorMessage));
     }
   };
 }
@@ -57,9 +98,13 @@ export function registerUser(data: IUser) {
 export function loginUser(data: ILoginUser) {
   return async function loginUserThunk(dispatch: AppDispatch) {
     try {
+      dispatch(clearMessages());
+      dispatch(setStatus(Status.LOADING));
+
       const response = await API.post("auth/login", data);
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
+        dispatch(setSuccessMessage("Login successful!"));
 
         if (response.data.user.role === "admin" && response.data.token) {
           localStorage.setItem("adminToken", response.data.token);
@@ -73,10 +118,17 @@ export function loginUser(data: ILoginUser) {
         }
       } else {
         dispatch(setStatus(Status.ERROR));
+        dispatch(setError("Login failed. Please try again."));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       dispatch(setStatus(Status.ERROR));
+      
+      // Generic error message for security
+      const errorMessage = error.response?.status === 400 
+        ? "Credentials not matched. Please check your email and password." 
+        : "Login failed. Please try again later.";
+      dispatch(setError(errorMessage));
     }
   };
 }
@@ -84,15 +136,96 @@ export function loginUser(data: ILoginUser) {
 export function forgotPassword(data: { email: string }) {
   return async function forgotPasswordThunk(dispatch: AppDispatch) {
     try {
-      const response = await API.post("auth/forgot-password", data);
+      dispatch(clearMessages());
+      dispatch(setStatus(Status.LOADING));
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(data.email)) {
+        dispatch(setError("Please enter a valid email address"));
+        dispatch(setStatus(Status.ERROR));
+        return;
+      }
+
+      const response = await API.post("auth/forget-password", data);
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
+        dispatch(setSuccessMessage("Password reset OTP has been sent to your email. Please check your inbox."));
       } else {
         dispatch(setStatus(Status.ERROR));
+        dispatch(setError("Failed to send reset link. Please try again."));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       dispatch(setStatus(Status.ERROR));
+      const errorMessage = error.response?.data?.message || "Failed to send reset link. Please try again later.";
+      dispatch(setError(errorMessage));
+    }
+  };
+}
+
+export function verifyOtp(data: { email: string; otp: string }) {
+  return async function verifyOtpThunk(dispatch: AppDispatch) {
+    try {
+      dispatch(clearMessages());
+      dispatch(setStatus(Status.LOADING));
+
+      const response = await API.post("auth/verify-otp", data);
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setSuccessMessage("OTP verified successfully. You can now reset your password."));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+        dispatch(setError("Invalid or expired OTP. Please try again."));
+      }
+    } catch (error: any) {
+      console.log(error);
+      dispatch(setStatus(Status.ERROR));
+      const errorMessage = error.response?.data?.message || "OTP verification failed. Please try again.";
+      dispatch(setError(errorMessage));
+    }
+  };
+}
+
+export function resetPassword(data: { email: string; newPassword: string; confirmPassword: string }) {
+  return async function resetPasswordThunk(dispatch: AppDispatch) {
+    try {
+      dispatch(clearMessages());
+      dispatch(setStatus(Status.LOADING));
+
+      // Password validation
+      if (data.newPassword.length < 8) {
+        dispatch(setError("Password must be at least 8 characters long"));
+        dispatch(setStatus(Status.ERROR));
+        return;
+      }
+
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!passwordRegex.test(data.newPassword)) {
+        dispatch(setError("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"));
+        dispatch(setStatus(Status.ERROR));
+        return;
+      }
+
+      if (data.newPassword !== data.confirmPassword) {
+        dispatch(setError("Passwords do not match"));
+        dispatch(setStatus(Status.ERROR));
+        return;
+      }
+
+      const response = await API.post("auth/reset-password", data);
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setSuccessMessage("Password reset successfully! You can now login with your new password."));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+        dispatch(setError("Failed to reset password. Please try again."));
+      }
+    } catch (error: any) {
+      console.log(error);
+      dispatch(setStatus(Status.ERROR));
+      const errorMessage = error.response?.data?.message || "Failed to reset password. Please try again later.";
+      dispatch(setError(errorMessage));
     }
   };
 }
