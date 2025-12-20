@@ -1,16 +1,14 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { resetPassword, clearMessages } from "../../store/authSlice";
+import { resetPassword, clearMessages, setResetEmail, setOtpVerified, clearResetState } from "../../store/authSlice";
 import { Status } from "../../globals/type";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function ResetPassword() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  const email = location.state?.email || "";
 
-  const { status, error, successMessage } = useAppSelector(
+  const { status, error, successMessage, otpVerified, resetEmail } = useAppSelector(
     (state) => state.auth
   );
   const [loading, setLoading] = useState(false);
@@ -19,27 +17,87 @@ function ResetPassword() {
     confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
+  // Check on mount and restore from localStorage if needed
   useEffect(() => {
-    // Redirect back if no email provided
-    if (!email) {
-      navigate("/forgot-password");
-    }
-    // Clear any previous messages when component mounts
+    console.log('[ResetPassword] Component mounted');
+    
+    // IMPORTANT: Clear messages first to prevent stale SUCCESS from OTP verification
     dispatch(clearMessages());
-  }, [dispatch, email, navigate]);
+    console.log('[ResetPassword] Messages cleared');
+    
+    const storedEmail = localStorage.getItem("resetEmail");
+    const storedOtpVerified = localStorage.getItem("otpVerified") === "true";
+    
+    console.log('[ResetPassword] resetEmail from Redux:', resetEmail);
+    console.log('[ResetPassword] resetEmail from localStorage:', storedEmail);
+    console.log('[ResetPassword] otpVerified from Redux:', otpVerified);
+    console.log('[ResetPassword] otpVerified from localStorage:', storedOtpVerified);
+    
+    // Restore from localStorage if page was refreshed
+    if (!resetEmail && storedEmail) {
+      console.log('[ResetPassword] Restoring email from localStorage');
+      dispatch(setResetEmail(storedEmail));
+    }
+    if (!otpVerified && storedOtpVerified) {
+      console.log('[ResetPassword] Restoring otpVerified from localStorage');
+      dispatch(setOtpVerified(true));
+    }
+    
+    // Check after potential restoration
+    const hasEmail = resetEmail || storedEmail;
+    const hasVerified = otpVerified || storedOtpVerified;
+    
+    if (!hasVerified || !hasEmail) {
+      console.log('[ResetPassword] Missing verification or email, redirecting to forgot-password');
+      navigate("/forgot-password");
+      return;
+    }
+    
+    console.log('[ResetPassword] All checks passed, staying on page');
+    
+    // Set mounted flag after a small delay to ensure messages are cleared
+    setTimeout(() => {
+      setHasMounted(true);
+    }, 100);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array - only run on mount
 
   useEffect(() => {
+    console.log('[ResetPassword] Status changed:', status);
+    console.log('[ResetPassword] Success message:', successMessage);
+    console.log('[ResetPassword] Has mounted:', hasMounted);
+    
     if (status !== "loading") {
       setLoading(false);
     }
-    if (status === Status.SUCCESS && successMessage) {
-      // Navigate to login page after 3 seconds
-      setTimeout(() => {
-        navigate("/login");
-      }, 3000);
+    
+    // Only process navigation if component has fully mounted (prevents initial stale SUCCESS)
+    if (!hasMounted) {
+      console.log('[ResetPassword] Not yet mounted, ignoring status');
+      return;
     }
-  }, [status, successMessage, navigate]);
+    
+    if (status === Status.SUCCESS && successMessage) {
+      console.log('[ResetPassword] SUCCESS detected after mount, checking message...');
+      const messageLC = successMessage.toLowerCase();
+      console.log('[ResetPassword] Message in lowercase:', messageLC);
+      // Check if message contains both "password" and "reset"
+      if (messageLC.includes("password") && messageLC.includes("reset")) {
+        console.log('[ResetPassword] ✅ Password reset successful, navigating to login in 3 seconds');
+        setTimeout(() => {
+          console.log('[ResetPassword] Navigating now...');
+          dispatch(clearResetState()); // Clear state before navigation
+          navigate("/login");
+        }, 3000);
+      } else {
+        console.log('[ResetPassword] ❌ Message does not match password reset pattern');
+      }
+    } else {
+      console.log('[ResetPassword] No SUCCESS status or no message');
+    }
+  }, [status, successMessage, navigate, hasMounted]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,7 +107,9 @@ function ResetPassword() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    dispatch(resetPassword({ ...data, email }));
+    if (resetEmail) {
+      dispatch(resetPassword({ ...data, email: resetEmail }));
+    }
   };
 
   return (
@@ -78,7 +138,7 @@ function ResetPassword() {
 
           <p className="text-center text-sm text-gray-600 mb-6">
             Create a new password for{" "}
-            <span className="font-semibold">{email}</span>
+            <span className="font-semibold">{resetEmail}</span>
           </p>
 
           {/* Success Message */}

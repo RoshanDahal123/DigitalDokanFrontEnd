@@ -1,41 +1,79 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { verifyOtp, clearMessages } from "../../store/authSlice";
+import { verifyOtp, setResetEmail, clearMessages } from "../../store/authSlice";
 import { Status } from "../../globals/type";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function VerifyOtp() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  const email = location.state?.email || "";
-
-  const { status, error, successMessage } = useAppSelector(
+  
+  const { status, error, successMessage, resetEmail } = useAppSelector(
     (state) => state.auth
   );
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState("");
+  const [isChecking, setIsChecking] = useState(true);
 
+  // Check on mount and restore from localStorage if needed
   useEffect(() => {
-    // Redirect back if no email provided
-    if (!email) {
-      navigate("/forgot-password");
-    }
-    // Clear any previous messages when component mounts
+    console.log('[VerifyOtp] Component mounted');
+    
+    // IMPORTANT: Clear messages first to prevent stale SUCCESS status from causing navigation
     dispatch(clearMessages());
-  }, [dispatch, email, navigate]);
+    console.log('[VerifyOtp] Messages cleared');
+    
+    console.log('[VerifyOtp] resetEmail from Redux:', resetEmail);
+    
+    const storedEmail = localStorage.getItem("resetEmail");
+    console.log('[VerifyOtp] resetEmail from localStorage:', storedEmail);
+    
+    // If no email in Redux but exists in localStorage, restore it
+    if (!resetEmail && storedEmail) {
+      console.log('[VerifyOtp] Restoring email from localStorage');
+      dispatch(setResetEmail(storedEmail));
+      setIsChecking(false);
+      return;
+    }
+    
+    // If we have email in Redux, we're good
+    if (resetEmail) {
+      console.log('[VerifyOtp] Email exists in Redux, staying on page');
+      setIsChecking(false);
+      return;
+    }
+    
+    // If no email anywhere, redirect
+    if (!resetEmail && !storedEmail) {
+      console.log('[VerifyOtp] No email found, redirecting to forgot-password');
+      navigate("/forgot-password");
+      return;
+    }
+    
+    setIsChecking(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run only once on mount
 
   useEffect(() => {
+    console.log('[VerifyOtp] Status changed:', status);
+    console.log('[VerifyOtp] Success message:', successMessage);
+    
     if (status !== "loading") {
       setLoading(false);
     }
     if (status === Status.SUCCESS && successMessage) {
-      // Navigate to reset password page after 2 seconds
-      setTimeout(() => {
-        navigate("/reset-password", { state: { email } });
-      }, 2000);
+      console.log('[VerifyOtp] SUCCESS detected, checking if OTP was verified...');
+      // Only navigate if the success is from OTP verification (not from forgot password)
+      if (successMessage.includes("verified")) {
+        console.log('[VerifyOtp] OTP verified, navigating to reset password in 2 seconds');
+        setTimeout(() => {
+          navigate("/reset-password");
+        }, 2000);
+      } else {
+        console.log('[VerifyOtp] SUCCESS is from forgot password, NOT navigating');
+      }
     }
-  }, [status, successMessage, navigate, email]);
+  }, [status, successMessage, navigate]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setOtp(e.target.value);
@@ -44,8 +82,22 @@ function VerifyOtp() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    dispatch(verifyOtp({ email, otp }));
+    if (resetEmail) {
+      dispatch(verifyOtp({ email: resetEmail, otp }));
+    }
   };
+
+  // Show loading while checking authentication state
+  if (isChecking) {
+    return (
+      <div className="bg-gray-100 flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-sky-500 border-r-transparent"></div>
+          <p className="mt-2 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-100 flex h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -73,7 +125,7 @@ function VerifyOtp() {
 
           <p className="text-center text-sm text-gray-600 mb-6">
             Enter the 6-digit OTP sent to{" "}
-            <span className="font-semibold">{email}</span>
+            <span className="font-semibold">{resetEmail}</span>
           </p>
 
           {/* Success Message */}

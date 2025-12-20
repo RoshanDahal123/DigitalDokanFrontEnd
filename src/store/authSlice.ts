@@ -16,6 +16,8 @@ const initialState: IAuthState = {
   status: Status.LOADING,
   error: null,
   successMessage: null,
+  otpVerified: localStorage.getItem("otpVerified") === "true",
+  resetEmail: localStorage.getItem("resetEmail"),
 };
 
 const authSlice = createSlice({
@@ -44,9 +46,24 @@ const authSlice = createSlice({
       state.error = null;
       state.successMessage = null;
     },
+    setOtpVerified(state: IAuthState, action: PayloadAction<boolean>) {
+      state.otpVerified = action.payload;
+    },
+    setResetEmail(state: IAuthState, action: PayloadAction<string | null>) {
+      state.resetEmail = action.payload;
+    },
+    clearResetState(state: IAuthState) {
+      state.otpVerified = false;
+      state.resetEmail = null;
+      state.error = null;
+      state.successMessage = null;
+      // Clear from localStorage as well
+      localStorage.removeItem("resetEmail");
+      localStorage.removeItem("otpVerified");
+    },
   },
 });
-export const { setUser, setStatus, setToken, removeToken, setError, setSuccessMessage, clearMessages } = authSlice.actions;
+export const { setUser, setStatus, setToken, removeToken, setError, setSuccessMessage, clearMessages, setOtpVerified, setResetEmail, clearResetState } = authSlice.actions;
 export default authSlice.reducer;
 
 export function registerUser(data: IUser) {
@@ -151,6 +168,11 @@ export function forgotPassword(data: { email: string }) {
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setSuccessMessage("Password reset OTP has been sent to your email. Please check your inbox."));
+        dispatch(setResetEmail(data.email));
+        dispatch(setOtpVerified(false));
+        // Persist to localStorage to survive tab switches
+        localStorage.setItem("resetEmail", data.email);
+        localStorage.removeItem("otpVerified");
       } else {
         dispatch(setStatus(Status.ERROR));
         dispatch(setError("Failed to send reset link. Please try again."));
@@ -174,6 +196,9 @@ export function verifyOtp(data: { email: string; otp: string }) {
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setSuccessMessage("OTP verified successfully. You can now reset your password."));
+        dispatch(setOtpVerified(true));
+        // Persist to localStorage
+        localStorage.setItem("otpVerified", "true");
       } else {
         dispatch(setStatus(Status.ERROR));
         dispatch(setError("Invalid or expired OTP. Please try again."));
@@ -217,6 +242,7 @@ export function resetPassword(data: { email: string; newPassword: string; confir
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setSuccessMessage("Password reset successfully! You can now login with your new password."));
+        // Don't clear state here - let ResetPassword component handle it after showing success
       } else {
         dispatch(setStatus(Status.ERROR));
         dispatch(setError("Failed to reset password. Please try again."));

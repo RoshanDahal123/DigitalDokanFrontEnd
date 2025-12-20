@@ -11,6 +11,8 @@ export interface IAuthState {
   status: Status;
   error: string | null;
   successMessage: string | null;
+  otpVerified: boolean;
+  resetEmail: string | null;
 }
 export interface ILoginUser {
   email: string;

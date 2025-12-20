@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 
-import { registerUser } from "../../store/authSlice";
+import { registerUser, clearResetState } from "../../store/authSlice";
 import { Status } from "../../globals/type";
 import { IAuthState } from "./types";
 import { useNavigate } from "react-router-dom";
@@ -47,6 +47,11 @@ function Register() {
     setLoading(true);
     dispatch(registerUser(data));
   };
+
+  // Clear reset state when component mounts
+  useEffect(() => {
+    dispatch(clearResetState());
+  }, [dispatch]);
 
   useEffect(() => {
     if (status === Status.SUCCESS && successMessage) {

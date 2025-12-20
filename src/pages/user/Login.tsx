@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 
-import { loginUser } from "../../store/authSlice";
+import { loginUser, clearResetState } from "../../store/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
@@ -21,6 +21,11 @@ function Login() {
     email: "",
     password: "",
   });
+
+  // Clear reset state when user visits login page
+  useEffect(() => {
+    dispatch(clearResetState());
+  }, [dispatch]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
