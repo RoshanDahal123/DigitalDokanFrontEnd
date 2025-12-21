@@ -51,7 +51,6 @@ const orderSlice = createSlice({
       const updateOrder = state.items.map((order) =>
         order.id == orderId ? { ...order, orderStatus: status } : order
       );
-      console.log(updateOrder, "UO");
       state.items = updateOrder;
     },
   },
@@ -80,7 +79,6 @@ export function orderItem(data: IData) {
         window.location.href = response.data.url;
       }
     } catch (error) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
     }
   };
@@ -99,7 +97,6 @@ export function fetchMyOrders() {
         window.location.href = response.data.url;
       }
     } catch (error) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
     }
   };
@@ -118,7 +115,6 @@ export function fetchMyOrderDetail(id: string) {
         window.location.href = response.data.url;
       }
     } catch (error) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
     }
   };
@@ -134,7 +130,6 @@ export function cancelMyOrder(id: string) {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
     }
   };

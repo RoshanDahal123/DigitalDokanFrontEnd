@@ -67,7 +67,6 @@ export function fetchCategories() {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
     }
   };
@@ -84,7 +83,7 @@ export function deleteCategoryItem(id: string) {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.log(error);
+      // Error handling
     }
   };
 }
@@ -102,7 +101,7 @@ export function addCategoryItem(categoryName: string) {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.log(error);
+      // Error handling
     }
   };
 }

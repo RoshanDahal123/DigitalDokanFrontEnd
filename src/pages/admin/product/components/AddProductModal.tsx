@@ -44,7 +44,7 @@ function ProductModal({ closeModal }: { closeModal: () => void }) {
     try {
       dispatch(addProduct(data));
     } catch (error) {
-      console.log(error);
+      // Error handling
     }
   };
 

@@ -70,8 +70,7 @@ export function addToCart(productId: string) {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.log(error);
-      console.log(dispatch(setStatus(Status.ERROR)));
+      dispatch(setStatus(Status.ERROR));
     }
   };
 }
@@ -87,7 +86,6 @@ export function fetchCartItems() {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
     }
   };
@@ -106,7 +104,6 @@ export function handleCartItemUpdate(productId: string, quantity: number) {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
     }
   };
@@ -123,7 +120,6 @@ export function handleDeleteCartItem(productId: string) {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
     }
   };

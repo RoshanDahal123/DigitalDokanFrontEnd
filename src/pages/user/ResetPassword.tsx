@@ -21,27 +21,18 @@ function ResetPassword() {
 
   // Check on mount and restore from localStorage if needed
   useEffect(() => {
-    console.log('[ResetPassword] Component mounted');
     
     // IMPORTANT: Clear messages first to prevent stale SUCCESS from OTP verification
     dispatch(clearMessages());
-    console.log('[ResetPassword] Messages cleared');
     
     const storedEmail = localStorage.getItem("resetEmail");
     const storedOtpVerified = localStorage.getItem("otpVerified") === "true";
     
-    console.log('[ResetPassword] resetEmail from Redux:', resetEmail);
-    console.log('[ResetPassword] resetEmail from localStorage:', storedEmail);
-    console.log('[ResetPassword] otpVerified from Redux:', otpVerified);
-    console.log('[ResetPassword] otpVerified from localStorage:', storedOtpVerified);
-    
     // Restore from localStorage if page was refreshed
     if (!resetEmail && storedEmail) {
-      console.log('[ResetPassword] Restoring email from localStorage');
       dispatch(setResetEmail(storedEmail));
     }
     if (!otpVerified && storedOtpVerified) {
-      console.log('[ResetPassword] Restoring otpVerified from localStorage');
       dispatch(setOtpVerified(true));
     }
     
@@ -50,12 +41,9 @@ function ResetPassword() {
     const hasVerified = otpVerified || storedOtpVerified;
     
     if (!hasVerified || !hasEmail) {
-      console.log('[ResetPassword] Missing verification or email, redirecting to forgot-password');
       navigate("/forgot-password");
       return;
     }
-    
-    console.log('[ResetPassword] All checks passed, staying on page');
     
     // Set mounted flag after a small delay to ensure messages are cleared
     setTimeout(() => {
@@ -65,37 +53,24 @@ function ResetPassword() {
   }, []); // Empty dependency array - only run on mount
 
   useEffect(() => {
-    console.log('[ResetPassword] Status changed:', status);
-    console.log('[ResetPassword] Success message:', successMessage);
-    console.log('[ResetPassword] Has mounted:', hasMounted);
-    
     if (status !== "loading") {
       setLoading(false);
     }
     
     // Only process navigation if component has fully mounted (prevents initial stale SUCCESS)
     if (!hasMounted) {
-      console.log('[ResetPassword] Not yet mounted, ignoring status');
       return;
     }
     
     if (status === Status.SUCCESS && successMessage) {
-      console.log('[ResetPassword] SUCCESS detected after mount, checking message...');
       const messageLC = successMessage.toLowerCase();
-      console.log('[ResetPassword] Message in lowercase:', messageLC);
       // Check if message contains both "password" and "reset"
       if (messageLC.includes("password") && messageLC.includes("reset")) {
-        console.log('[ResetPassword] ✅ Password reset successful, navigating to login in 3 seconds');
         setTimeout(() => {
-          console.log('[ResetPassword] Navigating now...');
           dispatch(clearResetState()); // Clear state before navigation
           navigate("/login");
         }, 3000);
-      } else {
-        console.log('[ResetPassword] ❌ Message does not match password reset pattern');
       }
-    } else {
-      console.log('[ResetPassword] No SUCCESS status or no message');
     }
   }, [status, successMessage, navigate, hasMounted]);
 

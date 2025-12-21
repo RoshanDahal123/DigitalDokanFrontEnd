@@ -69,7 +69,7 @@ function UpdateProductModal({
     try {
       dispatch(updateProduct(data));
     } catch (error) {
-      console.log(error);
+      // Error handling
     }
   };
 

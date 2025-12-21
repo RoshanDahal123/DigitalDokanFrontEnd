@@ -17,20 +17,14 @@ function VerifyOtp() {
 
   // Check on mount and restore from localStorage if needed
   useEffect(() => {
-    console.log('[VerifyOtp] Component mounted');
     
     // IMPORTANT: Clear messages first to prevent stale SUCCESS status from causing navigation
     dispatch(clearMessages());
-    console.log('[VerifyOtp] Messages cleared');
-    
-    console.log('[VerifyOtp] resetEmail from Redux:', resetEmail);
     
     const storedEmail = localStorage.getItem("resetEmail");
-    console.log('[VerifyOtp] resetEmail from localStorage:', storedEmail);
     
     // If no email in Redux but exists in localStorage, restore it
     if (!resetEmail && storedEmail) {
-      console.log('[VerifyOtp] Restoring email from localStorage');
       dispatch(setResetEmail(storedEmail));
       setIsChecking(false);
       return;
@@ -38,14 +32,12 @@ function VerifyOtp() {
     
     // If we have email in Redux, we're good
     if (resetEmail) {
-      console.log('[VerifyOtp] Email exists in Redux, staying on page');
       setIsChecking(false);
       return;
     }
     
     // If no email anywhere, redirect
     if (!resetEmail && !storedEmail) {
-      console.log('[VerifyOtp] No email found, redirecting to forgot-password');
       navigate("/forgot-password");
       return;
     }
@@ -55,22 +47,15 @@ function VerifyOtp() {
   }, []); // Run only once on mount
 
   useEffect(() => {
-    console.log('[VerifyOtp] Status changed:', status);
-    console.log('[VerifyOtp] Success message:', successMessage);
-    
     if (status !== "loading") {
       setLoading(false);
     }
     if (status === Status.SUCCESS && successMessage) {
-      console.log('[VerifyOtp] SUCCESS detected, checking if OTP was verified...');
       // Only navigate if the success is from OTP verification (not from forgot password)
       if (successMessage.includes("verified")) {
-        console.log('[VerifyOtp] OTP verified, navigating to reset password in 2 seconds');
         setTimeout(() => {
           navigate("/reset-password");
         }, 2000);
-      } else {
-        console.log('[VerifyOtp] SUCCESS is from forgot password, NOT navigating');
       }
     }
   }, [status, successMessage, navigate]);

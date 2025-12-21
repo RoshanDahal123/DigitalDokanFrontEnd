@@ -62,7 +62,6 @@ export function fetchAllOrder() {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
     }
   };
@@ -75,16 +74,11 @@ export function fetchAdminOrderDetail(id: string) {
 
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS));
-        console.log(
-          "this is the response of the order details",
-          response.data.data
-        );
         dispatch(setOrderDetails(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
     }
   };

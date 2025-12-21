@@ -18,15 +18,6 @@ function CategoryTable({ categories }: { categories: ICategory[] }) {
   );
   const openModal = useCallback(() => setIsModalOpen(true), []);
   const closeModal = useCallback(() => setIsModalOpen(false), []);
-  //to check if the function is new instance
-  // const openModalRef = useRef<() => void | null>(null);
-  // if (openModalRef.current) {
-  //   console.log(
-  //     "funciton new instance create vay0!!",
-  //     openModalRef.current != openModal
-  //   );
-  //   openModalRef.current = openModal;
-  // }
   return (
     <>
       <div className="flex flex-col">

@@ -104,7 +104,6 @@ export function registerUser(data: IUser) {
         dispatch(setError("Registration failed. Please try again."));
       }
     } catch (error: any) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
       const errorMessage = error.response?.data?.message || "Registration failed. Please try again later.";
       dispatch(setError(errorMessage));
@@ -138,7 +137,6 @@ export function loginUser(data: ILoginUser) {
         dispatch(setError("Login failed. Please try again."));
       }
     } catch (error: any) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
       
       // Generic error message for security
@@ -178,7 +176,6 @@ export function forgotPassword(data: { email: string }) {
         dispatch(setError("Failed to send reset link. Please try again."));
       }
     } catch (error: any) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
       const errorMessage = error.response?.data?.message || "Failed to send reset link. Please try again later.";
       dispatch(setError(errorMessage));
@@ -204,7 +201,6 @@ export function verifyOtp(data: { email: string; otp: string }) {
         dispatch(setError("Invalid or expired OTP. Please try again."));
       }
     } catch (error: any) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
       const errorMessage = error.response?.data?.message || "OTP verification failed. Please try again.";
       dispatch(setError(errorMessage));
@@ -248,7 +244,6 @@ export function resetPassword(data: { email: string; newPassword: string; confir
         dispatch(setError("Failed to reset password. Please try again."));
       }
     } catch (error: any) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
       const errorMessage = error.response?.data?.message || "Failed to reset password. Please try again later.";
       dispatch(setError(errorMessage));
@@ -263,7 +258,6 @@ export function logoutUser() {
       localStorage.removeItem("token");
       dispatch(setStatus(Status.SUCCESS));
     } catch (error) {
-      console.log(error);
       dispatch(setStatus(Status.ERROR));
     }
   };

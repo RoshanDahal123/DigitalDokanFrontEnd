@@ -22,7 +22,7 @@ const Modal: React.FC<ModalProps> = ({ closeModal }: ModalProps) => {
     try {
       dispatch(addCategoryItem(categoryName));
     } catch (error) {
-      console.log(error);
+      // Error handling
     }
   };
   useEffect(() => {

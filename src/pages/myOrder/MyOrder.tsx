@@ -30,7 +30,6 @@ const MyOrder = () => {
     socket.on(
       "statusUpdated",
       (data: { userId: string; orderId: string; status: OrderStatus }) => {
-        console.log("Order status updated:", data);
         dispatch(updateOrderStatusinSlice(data));
       }
     );

@@ -18,13 +18,10 @@ function Navbar() {
     const loginStatus =
       !!localStorageToken || !!reduxToken || !!adminLocalStorageToken;
     setIsLoggedIn(loginStatus);
-
-    // console.log(isLoggedIn);
   }, [reduxToken]);
   useEffect(() => {
     if (isLoggedIn) {
       dispatch(fetchCartItems());
-      // console.log(isLoggedIn);
     }
   }, [isLoggedIn]);
 

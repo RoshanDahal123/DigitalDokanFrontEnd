@@ -8,7 +8,6 @@ import { clearCart } from "../../store/cartSlice";
 
 function Checkout() {
   const { items } = useAppSelector((store) => store.cart);
-  console.log(items);
   const { khaltiUrl } = useAppSelector((store) => store.orders);
   const dispatch = useAppDispatch();
   const subTotal = items.reduce(

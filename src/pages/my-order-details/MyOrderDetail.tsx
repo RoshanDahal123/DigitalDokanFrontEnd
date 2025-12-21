@@ -7,11 +7,8 @@ import { OrderStatus } from ".";
 
 const MyOrderDetail = () => {
   const { id } = useParams();
-  console.log(id);
   const dispatch = useAppDispatch();
   const { orderDetail } = useAppSelector((store) => store.orders);
-
-  console.log(orderDetail, "Items");
 
   const handleCancelOrder = () => {
     if (id) {

@@ -14,23 +14,18 @@ function ForgotPassword() {
   const [email, setEmail] = useState("");
 
   useEffect(() => {
-    console.log('[ForgotPassword] Component mounted');
     // Clear any previous messages when component mounts
     dispatch(clearMessages());
     // DON'T clear reset state - user might be coming back to resend OTP
   }, [dispatch]);
 
   useEffect(() => {
-    console.log('[ForgotPassword] Status:', status, 'Message:', successMessage);
     if (status !== "loading") {
       setLoading(false);
     }
     if (status === Status.SUCCESS && successMessage) {
-      console.log('[ForgotPassword] OTP sent successfully, will navigate to verify-otp');
       // Small delay to ensure localStorage is set before navigation
       setTimeout(() => {
-        const storedEmail = localStorage.getItem("resetEmail");
-        console.log('[ForgotPassword] Before navigation, resetEmail in localStorage:', storedEmail);
         navigate("/verify-otp");
       }, 1500);
     }
