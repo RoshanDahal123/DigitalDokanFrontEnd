@@ -23,6 +23,7 @@ import AdminProduct from "./pages/admin/product/AdminProdcut";
 import SingleProductAdmin from "./pages/admin/product/SingleProductAdmin";
 import AdminOrder from "./pages/admin/orders/AdminOrder";
 import AdminOrderDetail from "./pages/admin/order-details/AdminOrderDetails";
+import ProtectedRoute from "./globals/component/ProtectedRoute";
 import { io } from "socket.io-client";
 
 export const socket = io("http://localhost:4000", {
@@ -44,17 +45,17 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/products" element={<Product />} />
           <Route path="/product/:id" element={<SingleProduct />} />
-          <Route path="/my-cart" element={<Cart />} />
-          <Route path="/my-checkout" element={<Checkout />} />
-          <Route path="/my-orders" element={<MyOrder />} />
-          <Route path="/my-orders/:id" element={<MyOrderDetail />} />
-          <Route path="/admin" element={<AdminStats />} />
-          <Route path="/admin/categories" element={<Category />} />
-          <Route path="/admin/users" element={<User />} />
-          <Route path="/admin/products" element={<AdminProduct />} />
-          <Route path="/admin/product/:id" element={<SingleProductAdmin />} />
-          <Route path="/admin/orders" element={<AdminOrder />} />
-          <Route path="/admin/order/:id" element={<AdminOrderDetail />} />
+          <Route path="/my-cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+          <Route path="/my-checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+          <Route path="/my-orders" element={<ProtectedRoute><MyOrder /></ProtectedRoute>} />
+          <Route path="/my-orders/:id" element={<ProtectedRoute><MyOrderDetail /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminStats /></ProtectedRoute>} />
+          <Route path="/admin/categories" element={<ProtectedRoute requireAdmin={true}><Category /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute requireAdmin={true}><User /></ProtectedRoute>} />
+          <Route path="/admin/products" element={<ProtectedRoute requireAdmin={true}><AdminProduct /></ProtectedRoute>} />
+          <Route path="/admin/product/:id" element={<ProtectedRoute requireAdmin={true}><SingleProductAdmin /></ProtectedRoute>} />
+          <Route path="/admin/orders" element={<ProtectedRoute requireAdmin={true}><AdminOrder /></ProtectedRoute>} />
+          <Route path="/admin/order/:id" element={<ProtectedRoute requireAdmin={true}><AdminOrderDetail /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </Provider>

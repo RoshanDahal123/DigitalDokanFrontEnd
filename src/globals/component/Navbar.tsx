@@ -8,26 +8,23 @@ function Navbar() {
   const reduxToken = useAppSelector((store) => store.auth.user.token);
   const { items } = useAppSelector((store) => store.cart);
   const dispatch = useAppDispatch();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  // Check login status on component mount and when reduxToken changes
+  const localStorageToken = localStorage.getItem("token");
+  const adminLocalStorageToken = localStorage.getItem("adminToken");
+  const isLoggedIn = !!localStorageToken || !!reduxToken;
+  const isAdmin = !!adminLocalStorageToken && (reduxToken === adminLocalStorageToken || !reduxToken);
+
   useEffect(() => {
-    const localStorageToken = localStorage.getItem("token");
-    const adminLocalStorageToken = localStorage.getItem("adminToken");
-    const loginStatus =
-      !!localStorageToken || !!reduxToken || !!adminLocalStorageToken;
-    setIsLoggedIn(loginStatus);
-  }, [reduxToken]);
-  useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && !isAdmin) {
       dispatch(fetchCartItems());
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, isAdmin, dispatch]);
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    setIsLoggedIn(false);
     navigate("/");
   };
 
@@ -62,7 +59,7 @@ function Navbar() {
               <Link to="/products" className="px-4">
                 Product
               </Link>
-              {isLoggedIn && (
+              {isLoggedIn && !isAdmin && (
                 <Link to="/my-cart" className="px-4">
                   Cart<sup>{items.length > 0 ? items.length : 0}</sup>
                 </Link>
@@ -111,6 +108,16 @@ function Navbar() {
             <div className="hidden md:flex items-center space-x-4">
               {isLoggedIn ? (
                 <>
+                  {isAdmin && (
+                    <Link to="/admin">
+                      <button
+                        type="button"
+                        className="py-3 px-8 text-sm bg-blue-500 hover:bg-blue-600 rounded text-white mr-3"
+                      >
+                        Dashboard
+                      </button>
+                    </Link>
+                  )}
                   <button
                     type="button"
                     className=" py-3 px-8 text-sm bg-teal-500 hover:bg-teal-600 rounded text-white mr-3 "
@@ -157,18 +164,37 @@ function Navbar() {
 
             {isLoggedIn ? (
               <>
-                <Link
-                  to="/my-cart"
-                  className="block py-2 hover:bg-gray-100 rounded"
-                >
-                  Cart <sup>{items.length > 0 ? items.length : 0}</sup>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="w-full py-2 text-left hover:bg-gray-100 rounded"
-                >
-                  Logout
-                </button>
+                {isAdmin ? (
+                  <>
+                    <Link
+                      to="/admin"
+                      className="block py-2 hover:bg-gray-100 rounded"
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full py-2 text-left hover:bg-gray-100 rounded"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/my-cart"
+                      className="block py-2 hover:bg-gray-100 rounded"
+                    >
+                      Cart <sup>{items.length > 0 ? items.length : 0}</sup>
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full py-2 text-left hover:bg-gray-100 rounded"
+                    >
+                      Logout
+                    </button>
+                  </>
+                )}
               </>
             ) : (
               <>

@@ -51,11 +51,9 @@ export function fetchUsers() {
         dispatch(setStatus(Status.SUCCESS));
       } else {
         dispatch(setStatus(Status.ERROR));
-        console.error("Error fetching users:", response.data.message);
       }
     } catch (error) {
       dispatch(setStatus(Status.ERROR));
-      console.error("Error fetching users:", error);
     }
   };
 }
@@ -66,11 +64,9 @@ export function deleteUserById(id: string) {
       const response = await APIWITHADMINTOKEN.delete("/auth/users/" + id);
       if (response.status === 200) {
         dispatch(setRemoveUser(id));
-      } else {
-        console.error("Error deleting user:", response.data.message);
       }
     } catch (error) {
-      console.error("Error deleting user:", error);
+      // Error handling
     }
   };
 }
