@@ -3,12 +3,14 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "../../store/cartSlice";
 import { logoutUser } from "../../store/authSlice";
+import { FaShoppingCart, FaUser, FaSignOutAlt, FaUserPlus, FaSignInAlt, FaTachometerAlt, FaBox } from "react-icons/fa";
 
 function Navbar() {
   const reduxToken = useAppSelector((store) => store.auth.user.token);
   const { items } = useAppSelector((store) => store.cart);
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [scrolled, setScrolled] = useState<boolean>(false);
   const navigate = useNavigate();
 
   // Check login status on component mount and when reduxToken changes
@@ -23,143 +25,164 @@ function Navbar() {
     }
   }, [isLoggedIn, isAdmin, dispatch]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate("/");
   };
 
   return (
-    <div>
-      <header className="sticky top-0 bg-white shadow">
-        <div className="container mx-auto py-3 px-4 md:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center text-xl md:text-2xl">
-              <div className="w-8 md:w-12 mr-2 md:mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                  //{" "}
-                  <path
-                    fill="#BEE3F8"
-                    d="M44,7L4,23l40,16l-7-16L44,7z M36,23H17l18-7l1,6V23z"
-                  />
-                  <path
-                    fill="#3182CE"
-                    d="M40.212,10.669l-5.044,11.529L34.817,23l0.351,0.802l5.044,11.529L9.385,23L40.212,10.669 M44,7L4,23 l40,16l-7-16L44,7L44,7z"
-                  ></path>
-                  <path
-                    fill="#3182CE"
-                    d="M36,22l-1-6l-18,7l17,7l-2-5l-8-2h12V22z M27.661,21l5.771-2.244L33.806,21H27.661z"
-                  ></path>
-                </svg>
-              </div>
-              <Link to="/">DDookan...</Link>
+    <nav className={`sticky top-0 z-50 transition-all duration-300 ${
+      scrolled 
+        ? "bg-white shadow-xl" 
+        : "bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700"
+    }`}>
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className={`w-12 h-12 rounded-xl ${
+              scrolled ? "bg-gradient-to-br from-blue-500 to-purple-600" : "bg-white/20"
+            } flex items-center justify-center transform group-hover:scale-110 transition-all duration-300 shadow-lg`}>
+              <FaShoppingCart className={`text-2xl ${scrolled ? "text-white" : "text-white"}`} />
             </div>
+            <span className={`text-2xl font-bold ${
+              scrolled ? "text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600" : "text-white"
+            }`}>
+              DigitalDookan
+            </span>
+          </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-4">
-              <Link to="/products" className="px-4">
-                Product
-              </Link>
-              {isLoggedIn && !isAdmin && (
-                <Link to="/my-cart" className="px-4">
-                  Cart<sup>{items.length > 0 ? items.length : 0}</sup>
-                </Link>
-              )}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100"
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-8">
+            <Link 
+              to="/products" 
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                scrolled 
+                  ? "text-gray-700 hover:text-blue-600 hover:bg-blue-50" 
+                  : "text-white hover:bg-white/20"
+              }`}
             >
-              {isOpen ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              )}
-            </button>
-
-            {/* Desktop Auth Buttons */}
-            <div className="hidden md:flex items-center space-x-4">
-              {isLoggedIn ? (
-                <>
-                  {isAdmin && (
-                    <Link to="/admin">
-                      <button
-                        type="button"
-                        className="py-3 px-8 text-sm bg-blue-500 hover:bg-blue-600 rounded text-white mr-3"
-                      >
-                        Dashboard
-                      </button>
-                    </Link>
-                  )}
-                  <button
-                    type="button"
-                    className=" py-3 px-8 text-sm bg-teal-500 hover:bg-teal-600 rounded text-white mr-3 "
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link to="/register">
-                    <button
-                      type="button"
-                      className=" py-3 px-8 text-sm bg-teal-500 hover:bg-teal-600 rounded text-white mr-3 "
-                    >
-                      Register
-                    </button>
-                  </Link>
-                  <Link to="/login">
-                    <button
-                      type="button"
-                      className=" py-3 px-8 text-sm bg-teal-500 hover:bg-teal-600 rounded text-white "
-                    >
-                      Login
-                    </button>
-                  </Link>
-                </>
-              )}
-            </div>
+              <FaBox />
+              <span>Products</span>
+            </Link>
+            
+            {isLoggedIn && !isAdmin && (
+              <Link 
+                to="/my-cart" 
+                className={`relative flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  scrolled 
+                    ? "text-gray-700 hover:text-blue-600 hover:bg-blue-50" 
+                    : "text-white hover:bg-white/20"
+                }`}
+              >
+                <FaShoppingCart className="text-xl" />
+                <span>Cart</span>
+                {items.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+                    {items.length}
+                  </span>
+                )}
+              </Link>
+            )}
           </div>
 
-          {/* Mobile Navigation */}
-          <div
-            className={`md:hidden ${
-              isOpen ? "block" : "hidden"
-            } mt-4 space-y-4`}
+          {/* Desktop Auth Buttons */}
+          <div className="hidden lg:flex items-center space-x-3">
+            {isLoggedIn ? (
+              <>
+                {isAdmin && (
+                  <Link to="/admin">
+                    <button className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                      scrolled
+                        ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg hover:shadow-xl"
+                        : "bg-white text-blue-600 hover:bg-blue-50"
+                    }`}>
+                      <FaTachometerAlt />
+                      <span>Dashboard</span>
+                    </button>
+                  </Link>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    scrolled
+                      ? "bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg hover:shadow-xl"
+                      : "bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm"
+                  }`}
+                >
+                  <FaSignOutAlt />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/register">
+                  <button className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    scrolled
+                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl"
+                      : "bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm"
+                  }`}>
+                    <FaUserPlus />
+                    <span>Register</span>
+                  </button>
+                </Link>
+                <Link to="/login">
+                  <button className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    scrolled
+                      ? "bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-50"
+                      : "bg-white text-blue-600 hover:bg-blue-50"
+                  }`}>
+                    <FaSignInAlt />
+                    <span>Login</span>
+                  </button>
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className={`lg:hidden p-2 rounded-lg transition-all duration-300 ${
+              scrolled 
+                ? "text-gray-700 hover:bg-gray-100" 
+                : "text-white hover:bg-white/20"
+            }`}
           >
+            {isOpen ? (
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="lg:hidden pb-4 space-y-2 animate-fade-in">
             <Link
               to="/products"
-              className="block py-2 hover:bg-gray-100 rounded"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all ${
+                scrolled
+                  ? "text-gray-700 hover:bg-blue-50"
+                  : "text-white hover:bg-white/20"
+              }`}
             >
-              Product
+              <FaBox />
+              <span>Products</span>
             </Link>
 
             {isLoggedIn ? (
@@ -168,30 +191,63 @@ function Navbar() {
                   <>
                     <Link
                       to="/admin"
-                      className="block py-2 hover:bg-gray-100 rounded"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all ${
+                        scrolled
+                          ? "text-gray-700 hover:bg-blue-50"
+                          : "text-white hover:bg-white/20"
+                      }`}
                     >
-                      Dashboard
+                      <FaTachometerAlt />
+                      <span>Dashboard</span>
                     </Link>
                     <button
-                      onClick={handleLogout}
-                      className="w-full py-2 text-left hover:bg-gray-100 rounded"
+                      onClick={() => {
+                        handleLogout();
+                        setIsOpen(false);
+                      }}
+                      className={`w-full flex items-center space-x-2 px-4 py-3 rounded-lg transition-all text-left ${
+                        scrolled
+                          ? "text-gray-700 hover:bg-red-50"
+                          : "text-white hover:bg-white/20"
+                      }`}
                     >
-                      Logout
+                      <FaSignOutAlt />
+                      <span>Logout</span>
                     </button>
                   </>
                 ) : (
                   <>
                     <Link
                       to="/my-cart"
-                      className="block py-2 hover:bg-gray-100 rounded"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all relative ${
+                        scrolled
+                          ? "text-gray-700 hover:bg-blue-50"
+                          : "text-white hover:bg-white/20"
+                      }`}
                     >
-                      Cart <sup>{items.length > 0 ? items.length : 0}</sup>
+                      <FaShoppingCart />
+                      <span>Cart</span>
+                      {items.length > 0 && (
+                        <span className="bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1">
+                          {items.length}
+                        </span>
+                      )}
                     </Link>
                     <button
-                      onClick={handleLogout}
-                      className="w-full py-2 text-left hover:bg-gray-100 rounded"
+                      onClick={() => {
+                        handleLogout();
+                        setIsOpen(false);
+                      }}
+                      className={`w-full flex items-center space-x-2 px-4 py-3 rounded-lg transition-all text-left ${
+                        scrolled
+                          ? "text-gray-700 hover:bg-red-50"
+                          : "text-white hover:bg-white/20"
+                      }`}
                     >
-                      Logout
+                      <FaSignOutAlt />
+                      <span>Logout</span>
                     </button>
                   </>
                 )}
@@ -200,22 +256,34 @@ function Navbar() {
               <>
                 <Link
                   to="/register"
-                  className="block py-2 hover:bg-gray-100 rounded"
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all ${
+                    scrolled
+                      ? "text-gray-700 hover:bg-blue-50"
+                      : "text-white hover:bg-white/20"
+                  }`}
                 >
-                  Register
+                  <FaUserPlus />
+                  <span>Register</span>
                 </Link>
                 <Link
                   to="/login"
-                  className="block py-2 hover:bg-gray-100 rounded"
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all ${
+                    scrolled
+                      ? "text-gray-700 hover:bg-blue-50"
+                      : "text-white hover:bg-white/20"
+                  }`}
                 >
-                  Login
+                  <FaSignInAlt />
+                  <span>Login</span>
                 </Link>
               </>
             )}
           </div>
-        </div>
-      </header>
-    </div>
+        )}
+      </div>
+    </nav>
   );
 }
 

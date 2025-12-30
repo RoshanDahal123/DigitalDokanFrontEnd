@@ -100,12 +100,12 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ productId }) => {
             <div className="text-center md:text-left">
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-5xl font-bold text-gray-900">
-                  {productReviews.averageRating}
+                  {productReviews?.averageRating || "0"}
                 </span>
                 <div>
-                  {renderStars(Number(productReviews.averageRating))}
+                  {renderStars(Number(productReviews?.averageRating || 0))}
                   <p className="text-sm text-gray-600 mt-1">
-                    Based on {productReviews.totalReviews} reviews
+                    Based on {productReviews?.totalReviews || 0} reviews
                   </p>
                 </div>
               </div>
@@ -180,7 +180,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ productId }) => {
 
         {/* Reviews List */}
         <div className="space-y-6">
-          {productReviews.reviews.length > 0 ? (
+          {productReviews?.reviews && productReviews.reviews.length > 0 ? (
             productReviews.reviews.map((review) => (
               <div
                 key={review.id}
@@ -190,11 +190,11 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ productId }) => {
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
-                        {review.User.username.charAt(0).toUpperCase()}
+                        {review?.User?.username?.charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <p className="font-semibold text-gray-900">
-                          {review.User.username}
+                          {review?.User?.username}
                         </p>
                         {renderStars(review.rating)}
                       </div>

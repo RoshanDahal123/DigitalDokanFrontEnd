@@ -11,7 +11,7 @@ function Checkout() {
   const { khaltiUrl } = useAppSelector((store) => store.orders);
   const dispatch = useAppDispatch();
   const subTotal = items.reduce(
-    (total, item) => item.Product.productPrice * item.quantity + total,
+    (total, item) => (item?.Product?.productPrice || 0) * (item?.quantity || 0) + total,
     0
   );
 
@@ -48,7 +48,7 @@ function Checkout() {
         ? items.map((item) => {
             return {
               quantity: item.quantity,
-              productId: item.Product.id,
+              productId: item?.Product?.id,
             };
           })
         : [];
@@ -96,7 +96,7 @@ function Checkout() {
                           </div>
                           <div className="w-full">
                             <h3 className="text-sm lg:text-base text-gray-800">
-                              {item.Product.productName}
+                              {item?.Product?.productName}
                             </h3>
                             <ul className="text-xs text-gray-800 space-y-1 mt-3">
                               {/* <li className="flex flex-wrap gap-4">Size <span className="ml-auto">37</span></li> */}

@@ -30,7 +30,7 @@ const MyOrderDetail = () => {
             Order #{orderDetail[0]?.orderId}
           </h1>
           <p className="text-base dark:text-gray-300 font-medium leading-6 text-gray-600">
-            {new Date(orderDetail[0]?.createdAt).toLocaleDateString()}
+            {orderDetail[0]?.createdAt && new Date(orderDetail[0].createdAt).toLocaleDateString()}
           </p>
           <p>Order Status : {orderDetail[0]?.Order?.orderStatus}</p>
         </div>
@@ -65,7 +65,7 @@ const MyOrderDetail = () => {
                               <span className="dark:text-gray-400 text-gray-300">
                                 Category:{" "}
                               </span>{" "}
-                              {od?.Product.Category?.categoryName}
+                              {od?.Product?.Category?.categoryName}
                             </p>
                           </div>
                         </div>
@@ -96,7 +96,7 @@ const MyOrderDetail = () => {
                       Total+Shipping
                     </p>
                     <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                      Rs.{orderDetail[0]?.Order.totalAmount}
+                      Rs.{orderDetail[0]?.Order?.totalAmount}
                     </p>
                   </div>
                 </div>

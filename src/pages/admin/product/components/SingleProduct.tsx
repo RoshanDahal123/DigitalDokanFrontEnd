@@ -32,7 +32,7 @@ function SingleProduct({ product }: { product: IProduct }) {
                 {product?.productName}
               </h2>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                {product?.Category.categoryName}
+                {product?.Category?.categoryName}
               </p>
               <div className="flex mb-4">
                 <div className="mr-4">

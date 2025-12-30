@@ -3,6 +3,8 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { resetPassword, clearMessages, setResetEmail, setOtpVerified, clearResetState } from "../../store/authSlice";
 import { Status } from "../../globals/type";
 import { Link, useNavigate } from "react-router-dom";
+import { FaLock, FaCheckCircle, FaArrowRight } from "react-icons/fa";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 function ResetPassword() {
   const dispatch = useAppDispatch();
@@ -19,16 +21,12 @@ function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
 
-  // Check on mount and restore from localStorage if needed
   useEffect(() => {
-    
-    // IMPORTANT: Clear messages first to prevent stale SUCCESS from OTP verification
     dispatch(clearMessages());
     
     const storedEmail = localStorage.getItem("resetEmail");
     const storedOtpVerified = localStorage.getItem("otpVerified") === "true";
     
-    // Restore from localStorage if page was refreshed
     if (!resetEmail && storedEmail) {
       dispatch(setResetEmail(storedEmail));
     }
@@ -36,7 +34,6 @@ function ResetPassword() {
       dispatch(setOtpVerified(true));
     }
     
-    // Check after potential restoration
     const hasEmail = resetEmail || storedEmail;
     const hasVerified = otpVerified || storedOtpVerified;
     
@@ -45,34 +42,31 @@ function ResetPassword() {
       return;
     }
     
-    // Set mounted flag after a small delay to ensure messages are cleared
     setTimeout(() => {
       setHasMounted(true);
     }, 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array - only run on mount
+  }, []);
 
   useEffect(() => {
     if (status !== "loading") {
       setLoading(false);
     }
     
-    // Only process navigation if component has fully mounted (prevents initial stale SUCCESS)
     if (!hasMounted) {
       return;
     }
     
     if (status === Status.SUCCESS && successMessage) {
       const messageLC = successMessage.toLowerCase();
-      // Check if message contains both "password" and "reset"
       if (messageLC.includes("password") && messageLC.includes("reset")) {
         setTimeout(() => {
-          dispatch(clearResetState()); // Clear state before navigation
+          dispatch(clearResetState());
           navigate("/login");
         }, 3000);
       }
     }
-  }, [status, successMessage, navigate, hasMounted]);
+  }, [status, successMessage, navigate, hasMounted, dispatch]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -88,134 +82,163 @@ function ResetPassword() {
   };
 
   return (
-    <div className="bg-gray-100 flex h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
-        <div className="bg-white shadow-md rounded-md p-6">
-          <div className="flex justify-center mb-4">
-            <svg
-              className="h-12 w-12 text-sky-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-md w-full">
+        {/* Card */}
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+          {/* Header Section */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-10 text-center">
+            <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
+              <FaLock className="text-4xl text-white" />
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-2">Reset Password</h2>
+            <p className="text-blue-100">Create a new secure password</p>
           </div>
 
-          <h2 className="my-3 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Reset Password
-          </h2>
+          {/* Form Section */}
+          <div className="px-8 py-10">
+            <p className="text-center text-gray-600 mb-8">
+              Create a new password for{" "}
+              <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                {resetEmail}
+              </span>
+            </p>
 
-          <p className="text-center text-sm text-gray-600 mb-6">
-            Create a new password for{" "}
-            <span className="font-semibold">{resetEmail}</span>
-          </p>
-
-          {/* Success Message */}
-          {successMessage && (
-            <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-              {successMessage}
-            </div>
-          )}
-
-          {/* Error Message */}
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
-            </div>
-          )}
-
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="newPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
-                New Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  name="newPassword"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  minLength={8}
-                  value={data.newPassword}
-                  className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
-                  onChange={handleChange}
-                  placeholder="Enter new password"
-                />
+            {/* Success Message */}
+            {successMessage && (
+              <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded-lg animate-fade-in">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <FaCheckCircle className="h-5 w-5 text-green-500" />
+                  </div>
+                  <p className="ml-3 text-sm text-green-700 font-medium">{successMessage}</p>
+                </div>
               </div>
-              <p className="mt-1 text-xs text-gray-500">
-                Must be at least 8 characters with uppercase, lowercase, number, and special character (@$!%*?&)
-              </p>
-            </div>
+            )}
 
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Confirm Password
-              </label>
-              <div className="mt-1">
-                <input
-                  name="confirmPassword"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  minLength={8}
-                  value={data.confirmPassword}
-                  className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
-                  onChange={handleChange}
-                  placeholder="Confirm new password"
-                />
+            {/* Error Message */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg animate-fade-in">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <p className="ml-3 text-sm text-red-700 font-medium">{error}</p>
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="flex items-center">
-              <input
-                id="showPassword"
-                name="showPassword"
-                type="checkbox"
-                checked={showPassword}
-                onChange={() => setShowPassword(!showPassword)}
-                className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded"
-              />
-              <label
-                htmlFor="showPassword"
-                className="ml-2 block text-sm text-gray-700"
-              >
-                Show passwords
-              </label>
-            </div>
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {/* New Password Field */}
+              <div>
+                <label htmlFor="newPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                  New Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <FaLock className="text-gray-400" />
+                  </div>
+                  <input
+                    id="newPassword"
+                    name="newPassword"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    minLength={8}
+                    value={data.newPassword}
+                    onChange={handleChange}
+                    className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none text-gray-900"
+                    placeholder="Enter new password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    {showPassword ? <AiFillEyeInvisible className="text-xl" /> : <AiFillEye className="text-xl" />}
+                  </button>
+                </div>
+                <p className="mt-2 text-xs text-gray-500">
+                  Must be at least 8 characters with uppercase, lowercase, number, and special character (@$!%*?&)
+                </p>
+              </div>
 
-            <div>
+              {/* Confirm Password Field */}
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <FaLock className="text-gray-400" />
+                  </div>
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    minLength={8}
+                    value={data.confirmPassword}
+                    onChange={handleChange}
+                    className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none text-gray-900"
+                    placeholder="Confirm new password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    {showPassword ? <AiFillEyeInvisible className="text-xl" /> : <AiFillEye className="text-xl" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className={`flex w-full justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 ${
-                  loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-sky-400 hover:bg-opacity-75"
-                }`}
+                className="group w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                {loading ? "Resetting Password..." : "Reset Password"}
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Resetting Password...
+                  </>
+                ) : (
+                  <>
+                    <FaCheckCircle />
+                    Reset Password
+                    <FaArrowRight className="group-hover:translate-x-2 transition-transform" />
+                  </>
+                )}
               </button>
-            </div>
-          </form>
+            </form>
 
-          <div className="mt-6 text-center">
-            <Link
-              to="/login"
-              className="text-sm text-gray-500 hover:underline"
-            >
-              Back to Login
-            </Link>
+            {/* Back to Login Link */}
+            <div className="mt-8 text-center">
+              <Link
+                to="/login"
+                className="text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all inline-flex items-center gap-2"
+              >
+                <FaArrowRight className="rotate-180" />
+                Back to Login
+              </Link>
+            </div>
           </div>
+        </div>
+
+        {/* Back to Home */}
+        <div className="mt-6 text-center">
+          <Link
+            to="/"
+            className="text-white hover:text-blue-100 font-semibold transition-colors flex items-center justify-center gap-2"
+          >
+            <FaArrowRight className="rotate-180" />
+            Back to Home
+          </Link>
         </div>
       </div>
     </div>

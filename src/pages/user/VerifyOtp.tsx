@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { verifyOtp, setResetEmail, clearMessages } from "../../store/authSlice";
 import { Status } from "../../globals/type";
 import { Link, useNavigate } from "react-router-dom";
+import { FaShieldAlt, FaArrowRight, FaCheckCircle, FaRedo } from "react-icons/fa";
 
 function VerifyOtp() {
   const dispatch = useAppDispatch();
@@ -15,28 +16,22 @@ function VerifyOtp() {
   const [otp, setOtp] = useState("");
   const [isChecking, setIsChecking] = useState(true);
 
-  // Check on mount and restore from localStorage if needed
   useEffect(() => {
-    
-    // IMPORTANT: Clear messages first to prevent stale SUCCESS status from causing navigation
     dispatch(clearMessages());
     
     const storedEmail = localStorage.getItem("resetEmail");
     
-    // If no email in Redux but exists in localStorage, restore it
     if (!resetEmail && storedEmail) {
       dispatch(setResetEmail(storedEmail));
       setIsChecking(false);
       return;
     }
     
-    // If we have email in Redux, we're good
     if (resetEmail) {
       setIsChecking(false);
       return;
     }
     
-    // If no email anywhere, redirect
     if (!resetEmail && !storedEmail) {
       navigate("/forgot-password");
       return;
@@ -44,14 +39,13 @@ function VerifyOtp() {
     
     setIsChecking(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run only once on mount
+  }, []);
 
   useEffect(() => {
     if (status !== "loading") {
       setLoading(false);
     }
     if (status === Status.SUCCESS && successMessage) {
-      // Only navigate if the success is from OTP verification (not from forgot password)
       if (successMessage.includes("verified")) {
         setTimeout(() => {
           navigate("/reset-password");
@@ -72,116 +66,144 @@ function VerifyOtp() {
     }
   };
 
-  // Show loading while checking authentication state
   if (isChecking) {
     return (
-      <div className="bg-gray-100 flex h-screen items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-sky-500 border-r-transparent"></div>
-          <p className="mt-2 text-gray-600">Loading...</p>
+          <div className="inline-block h-12 w-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-white font-semibold">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-100 flex h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
-        <div className="bg-white shadow-md rounded-md p-6">
-          <div className="flex justify-center mb-4">
-            <svg
-              className="h-12 w-12 text-sky-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-md w-full">
+        {/* Card */}
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+          {/* Header Section */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-10 text-center">
+            <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
+              <FaShieldAlt className="text-4xl text-white" />
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-2">Verify OTP</h2>
+            <p className="text-blue-100">Enter the code sent to your email</p>
           </div>
 
-          <h2 className="my-3 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Verify OTP
-          </h2>
+          {/* Form Section */}
+          <div className="px-8 py-10">
+            <p className="text-center text-gray-600 mb-8">
+              Enter the 6-digit OTP sent to{" "}
+              <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                {resetEmail}
+              </span>
+            </p>
 
-          <p className="text-center text-sm text-gray-600 mb-6">
-            Enter the 6-digit OTP sent to{" "}
-            <span className="font-semibold">{resetEmail}</span>
-          </p>
-
-          {/* Success Message */}
-          {successMessage && (
-            <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-              {successMessage}
-            </div>
-          )}
-
-          {/* Error Message */}
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
-            </div>
-          )}
-
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="otp"
-                className="block text-sm font-medium text-gray-700"
-              >
-                OTP Code
-              </label>
-              <div className="mt-1">
-                <input
-                  name="otp"
-                  type="text"
-                  required
-                  maxLength={6}
-                  pattern="[0-9]{6}"
-                  value={otp}
-                  className="px-2 py-3 mt-1 block w-full text-center text-2xl tracking-widest rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500"
-                  onChange={handleChange}
-                  placeholder="000000"
-                />
+            {/* Success Message */}
+            {successMessage && (
+              <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded-lg animate-fade-in">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <FaCheckCircle className="h-5 w-5 text-green-500" />
+                  </div>
+                  <p className="ml-3 text-sm text-green-700 font-medium">{successMessage}</p>
+                </div>
               </div>
-              <p className="mt-1 text-xs text-gray-500 text-center">
-                OTP is valid for 2 minutes
-              </p>
-            </div>
+            )}
 
-            <div>
+            {/* Error Message */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg animate-fade-in">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <p className="ml-3 text-sm text-red-700 font-medium">{error}</p>
+                </div>
+              </div>
+            )}
+
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {/* OTP Field */}
+              <div>
+                <label htmlFor="otp" className="block text-sm font-semibold text-gray-700 mb-2 text-center">
+                  OTP Code
+                </label>
+                <div className="relative">
+                  <input
+                    id="otp"
+                    name="otp"
+                    type="text"
+                    required
+                    maxLength={6}
+                    pattern="[0-9]{6}"
+                    value={otp}
+                    onChange={handleChange}
+                    className="w-full px-4 py-6 text-center text-3xl font-bold tracking-[1em] border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none text-gray-900"
+                    placeholder="000000"
+                  />
+                </div>
+                <p className="mt-3 text-xs text-center text-gray-500 flex items-center justify-center gap-2">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                  </svg>
+                  OTP is valid for 2 minutes
+                </p>
+              </div>
+
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className={`flex w-full justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 ${
-                  loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-sky-400 hover:bg-opacity-75"
-                }`}
+                className="group w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                {loading ? "Verifying..." : "Verify OTP"}
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Verifying...
+                  </>
+                ) : (
+                  <>
+                    <FaCheckCircle />
+                    Verify OTP
+                    <FaArrowRight className="group-hover:translate-x-2 transition-transform" />
+                  </>
+                )}
               </button>
-            </div>
-          </form>
+            </form>
 
-          <div className="mt-6 text-center space-y-2">
-            <Link
-              to="/forgot-password"
-              className="block text-sm text-sky-500 hover:underline font-medium"
-            >
-              Resend OTP
-            </Link>
-            <Link
-              to="/login"
-              className="block text-sm text-gray-500 hover:underline"
-            >
-              Back to Login
-            </Link>
+            {/* Action Links */}
+            <div className="mt-8 space-y-3">
+              <Link
+                to="/forgot-password"
+                className="flex items-center justify-center gap-2 text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all"
+              >
+                <FaRedo />
+                Resend OTP
+              </Link>
+              <Link
+                to="/login"
+                className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <FaArrowRight className="rotate-180" />
+                Back to Login
+              </Link>
+            </div>
           </div>
+        </div>
+
+        {/* Back to Home */}
+        <div className="mt-6 text-center">
+          <Link
+            to="/"
+            className="text-white hover:text-blue-100 font-semibold transition-colors flex items-center justify-center gap-2"
+          >
+            <FaArrowRight className="rotate-180" />
+            Back to Home
+          </Link>
         </div>
       </div>
     </div>

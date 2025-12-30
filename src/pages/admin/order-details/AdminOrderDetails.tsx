@@ -106,7 +106,7 @@ const AdminOrderDetail = () => {
                         Total+Shipping
                       </p>
                       <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                        Rs.{orderDetail[0]?.Order.totalAmount}
+                        Rs.{orderDetail[0]?.Order?.totalAmount}
                       </p>
                     </div>
                   </div>
