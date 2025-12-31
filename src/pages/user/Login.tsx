@@ -166,7 +166,7 @@ function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="group w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {loading ? (
                   <>
@@ -174,11 +174,7 @@ function Login() {
                     Logging in...
                   </>
                 ) : (
-                  <>
-                    <FaUser />
-                    Login to Account
-                    <FaArrowRight className="group-hover:translate-x-2 transition-transform" />
-                  </>
+                  "Log in"
                 )}
               </button>
             </form>
