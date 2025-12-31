@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "../../store/cartSlice";
 import { logoutUser } from "../../store/authSlice";
-import { FaShoppingCart, FaUser, FaSignOutAlt, FaUserPlus, FaSignInAlt, FaTachometerAlt, FaBox } from "react-icons/fa";
+import { FaShoppingCart, FaUser, FaSignOutAlt, FaUserPlus, FaSignInAlt, FaTachometerAlt, FaBox, FaClipboardList } from "react-icons/fa";
 
 function Navbar() {
   const reduxToken = useAppSelector((store) => store.auth.user.token);
@@ -75,22 +75,35 @@ function Navbar() {
             </Link>
             
             {isLoggedIn && !isAdmin && (
-              <Link 
-                to="/my-cart" 
-                className={`relative flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                  scrolled 
-                    ? "text-gray-700 hover:text-blue-600 hover:bg-blue-50" 
-                    : "text-white hover:bg-white/20"
-                }`}
-              >
-                <FaShoppingCart className="text-xl" />
-                <span>Cart</span>
-                {items.length > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
-                    {items.length}
-                  </span>
-                )}
-              </Link>
+              <>
+                <Link 
+                  to="/my-orders" 
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    scrolled 
+                      ? "text-gray-700 hover:text-blue-600 hover:bg-blue-50" 
+                      : "text-white hover:bg-white/20"
+                  }`}
+                >
+                  <FaClipboardList className="text-xl" />
+                  <span>My Orders</span>
+                </Link>
+                <Link 
+                  to="/my-cart" 
+                  className={`relative flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    scrolled 
+                      ? "text-gray-700 hover:text-blue-600 hover:bg-blue-50" 
+                      : "text-white hover:bg-white/20"
+                  }`}
+                >
+                  <FaShoppingCart className="text-xl" />
+                  <span>Cart</span>
+                  {items.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+                      {items.length}
+                    </span>
+                  )}
+                </Link>
+              </>
             )}
           </div>
 
@@ -218,6 +231,18 @@ function Navbar() {
                   </>
                 ) : (
                   <>
+                    <Link
+                      to="/my-orders"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all ${
+                        scrolled
+                          ? "text-gray-700 hover:bg-blue-50"
+                          : "text-white hover:bg-white/20"
+                      }`}
+                    >
+                      <FaClipboardList />
+                      <span>My Orders</span>
+                    </Link>
                     <Link
                       to="/my-cart"
                       onClick={() => setIsOpen(false)}

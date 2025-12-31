@@ -3,8 +3,21 @@ import Navbar from "../../globals/component/Navbar";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { IData, PaymentMethod } from "./types";
 import { orderItem } from "../../store/orderSlice";
-
 import { clearCart } from "../../store/cartSlice";
+import { 
+  FaUser, 
+  FaEnvelope, 
+  FaPhone, 
+  FaMapMarkerAlt, 
+  FaCity, 
+  FaFlag, 
+  FaMailBulk,
+  FaShoppingBag,
+  FaTruck,
+  FaShieldAlt,
+  FaCheckCircle
+} from "react-icons/fa";
+import { KhaltiLogo, EsewaLogo, CODLogo } from "../../components/PaymentLogos";
 
 function Checkout() {
   const { items } = useAppSelector((store) => store.cart);
@@ -75,192 +88,351 @@ function Checkout() {
       return;
     }
   }, [khaltiUrl]);
+
   return (
     <>
       <Navbar />
-      <div className="font-[sans-serif] bg-white">
-        <div className="flex max-sm:flex-col gap-12 max-lg:gap-4 h-full">
-          <div className="bg-gray-100 sm:h-screen sm:sticky sm:top-0 lg:min-w-[370px] sm:min-w-[300px]">
-            <div className="relative h-full">
-              <div className="px-4 py-8 sm:overflow-auto sm:h-[calc(100vh-60px)]">
-                <div className="space-y-4">
-                  {items.length > 0 ? (
-                    items.map((item) => {
-                      return (
-                        <div className="flex items-start gap-4" key={item.id}>
-                          <div className="w-32 h-28 max-lg:w-24 max-lg:h-24 flex p-3 shrink-0 bg-gray-200 rounded-md">
-                            <img
-                              src={`http://localhost:4000/${item.Product?.productImageUrl}`}
-                              className="w-full object-contain"
-                            />
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 pt-8 pb-20">
+        <div className="container mx-auto px-4">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2">
+              Checkout
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Complete your order in just a few steps
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Checkout Form */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-2xl shadow-2xl p-8">
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  {/* Personal Details Section */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold">
+                        1
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-800">
+                        Personal Details
+                      </h3>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="relative">
+                        <FaUser className="absolute left-4 top-4 text-gray-400" />
+                        <input
+                          type="text"
+                          name="firstName"
+                          onChange={handleChange}
+                          placeholder="First Name"
+                          required
+                          className="pl-12 pr-4 py-4 bg-gray-50 focus:bg-white border-2 border-gray-200 focus:border-blue-500 text-gray-800 w-full rounded-xl focus:outline-none transition-all duration-300 shadow-sm"
+                        />
+                      </div>
+                      <div className="relative">
+                        <FaUser className="absolute left-4 top-4 text-gray-400" />
+                        <input
+                          type="text"
+                          name="lastName"
+                          onChange={handleChange}
+                          placeholder="Last Name"
+                          required
+                          className="pl-12 pr-4 py-4 bg-gray-50 focus:bg-white border-2 border-gray-200 focus:border-blue-500 text-gray-800 w-full rounded-xl focus:outline-none transition-all duration-300 shadow-sm"
+                        />
+                      </div>
+                      <div className="relative">
+                        <FaEnvelope className="absolute left-4 top-4 text-gray-400" />
+                        <input
+                          type="email"
+                          name="email"
+                          onChange={handleChange}
+                          placeholder="Email Address"
+                          required
+                          className="pl-12 pr-4 py-4 bg-gray-50 focus:bg-white border-2 border-gray-200 focus:border-blue-500 text-gray-800 w-full rounded-xl focus:outline-none transition-all duration-300 shadow-sm"
+                        />
+                      </div>
+                      <div className="relative">
+                        <FaPhone className="absolute left-4 top-4 text-gray-400" />
+                        <input
+                          type="tel"
+                          name="phoneNumber"
+                          onChange={handleChange}
+                          placeholder="Phone Number"
+                          required
+                          className="pl-12 pr-4 py-4 bg-gray-50 focus:bg-white border-2 border-gray-200 focus:border-blue-500 text-gray-800 w-full rounded-xl focus:outline-none transition-all duration-300 shadow-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Shipping Address Section */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold">
+                        2
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-800">
+                        Shipping Address
+                      </h3>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="relative md:col-span-2">
+                        <FaMapMarkerAlt className="absolute left-4 top-4 text-gray-400" />
+                        <input
+                          type="text"
+                          name="addressLine"
+                          onChange={handleChange}
+                          placeholder="Street Address"
+                          required
+                          className="pl-12 pr-4 py-4 bg-gray-50 focus:bg-white border-2 border-gray-200 focus:border-blue-500 text-gray-800 w-full rounded-xl focus:outline-none transition-all duration-300 shadow-sm"
+                        />
+                      </div>
+                      <div className="relative">
+                        <FaCity className="absolute left-4 top-4 text-gray-400" />
+                        <input
+                          type="text"
+                          name="city"
+                          onChange={handleChange}
+                          placeholder="City"
+                          required
+                          className="pl-12 pr-4 py-4 bg-gray-50 focus:bg-white border-2 border-gray-200 focus:border-blue-500 text-gray-800 w-full rounded-xl focus:outline-none transition-all duration-300 shadow-sm"
+                        />
+                      </div>
+                      <div className="relative">
+                        <FaFlag className="absolute left-4 top-4 text-gray-400" />
+                        <input
+                          type="text"
+                          name="state"
+                          onChange={handleChange}
+                          placeholder="State/Province"
+                          required
+                          className="pl-12 pr-4 py-4 bg-gray-50 focus:bg-white border-2 border-gray-200 focus:border-blue-500 text-gray-800 w-full rounded-xl focus:outline-none transition-all duration-300 shadow-sm"
+                        />
+                      </div>
+                      <div className="relative">
+                        <FaMailBulk className="absolute left-4 top-4 text-gray-400" />
+                        <input
+                          type="text"
+                          name="zipCode"
+                          onChange={handleChange}
+                          placeholder="ZIP / Postal Code"
+                          required
+                          className="pl-12 pr-4 py-4 bg-gray-50 focus:bg-white border-2 border-gray-200 focus:border-blue-500 text-gray-800 w-full rounded-xl focus:outline-none transition-all duration-300 shadow-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Payment Method Section */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold">
+                        3
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-800">
+                        Payment Method
+                      </h3>
+                    </div>
+
+                    <div className="space-y-4">
+                      {/* Khalti Payment Option */}
+                      <div
+                        onClick={() => handlePaymentMethod(PaymentMethod.Khalti)}
+                        className={`cursor-pointer rounded-xl border-2 p-6 transition-all duration-300 ${
+                          paymentMethod === PaymentMethod.Khalti
+                            ? "border-purple-600 bg-purple-50 shadow-lg"
+                            : "border-gray-200 hover:border-purple-300 hover:shadow-md"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="w-20 h-12 bg-white rounded-lg shadow-md flex items-center justify-center p-1">
+                              <KhaltiLogo />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-gray-800 text-lg">Khalti</h4>
+                              <p className="text-sm text-gray-600">Digital Wallet Payment</p>
+                            </div>
                           </div>
-                          <div className="w-full">
-                            <h3 className="text-sm lg:text-base text-gray-800">
-                              {item?.Product?.productName}
-                            </h3>
-                            <ul className="text-xs text-gray-800 space-y-1 mt-3">
-                              {/* <li className="flex flex-wrap gap-4">Size <span className="ml-auto">37</span></li> */}
-                              <li className="flex flex-wrap gap-4">
-                                Quantity{" "}
-                                <span className="ml-auto">
-                                  {item?.quantity}
-                                </span>
-                              </li>
-                              <li className="flex flex-wrap gap-4">
-                                Total Price{" "}
-                                <span className="ml-auto">
-                                  Rs.{item?.Product?.productPrice}
-                                </span>
-                              </li>
-                            </ul>
-                          </div>
+                          {paymentMethod === PaymentMethod.Khalti && (
+                            <FaCheckCircle className="text-3xl text-purple-600" />
+                          )}
                         </div>
-                      );
-                    })
-                  ) : (
-                    <p>No Items</p>
-                  )}
-                </div>
-              </div>
-              <div className="md:absolute md:left-0 md:bottom-0 bg-gray-200 w-full p-4">
-                <h4 className="flex flex-wrap gap-4 text-sm lg:text-base text-gray-800">
-                  Total <span className="ml-auto">Rs.{total}</span>
-                </h4>
+                      </div>
+
+                      {/* eSewa Payment Option */}
+                      <div
+                        onClick={() => handlePaymentMethod(PaymentMethod.Esewa)}
+                        className={`cursor-pointer rounded-xl border-2 p-6 transition-all duration-300 ${
+                          paymentMethod === PaymentMethod.Esewa
+                            ? "border-green-600 bg-green-50 shadow-lg"
+                            : "border-gray-200 hover:border-green-300 hover:shadow-md"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="w-20 h-12 bg-white rounded-lg shadow-md flex items-center justify-center p-1">
+                              <EsewaLogo />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-gray-800 text-lg">eSewa</h4>
+                              <p className="text-sm text-gray-600">Digital Wallet Payment</p>
+                            </div>
+                          </div>
+                          {paymentMethod === PaymentMethod.Esewa && (
+                            <FaCheckCircle className="text-3xl text-green-600" />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Cash on Delivery Option */}
+                      <div
+                        onClick={() => handlePaymentMethod(PaymentMethod.Cod)}
+                        className={`cursor-pointer rounded-xl border-2 p-6 transition-all duration-300 ${
+                          paymentMethod === PaymentMethod.Cod
+                            ? "border-blue-600 bg-blue-50 shadow-lg"
+                            : "border-gray-200 hover:border-blue-300 hover:shadow-md"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="w-20 h-12 bg-white rounded-lg shadow-md flex items-center justify-center p-1">
+                              <CODLogo />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-gray-800 text-lg">Cash on Delivery</h4>
+                              <p className="text-sm text-gray-600">Pay when you receive</p>
+                            </div>
+                          </div>
+                          {paymentMethod === PaymentMethod.Cod && (
+                            <FaCheckCircle className="text-3xl text-blue-600" />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="pt-6">
+                    {paymentMethod === PaymentMethod.Cod && (
+                      <button
+                        type="submit"
+                        className="group w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-5 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+                      >
+                        <FaTruck className="text-2xl group-hover:animate-bounce" />
+                        Place Order - Cash on Delivery
+                      </button>
+                    )}
+                    {paymentMethod === PaymentMethod.Khalti && (
+                      <button
+                        type="submit"
+                        className="group w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-5 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+                      >
+                        <FaShieldAlt className="text-2xl group-hover:animate-bounce" />
+                        Pay with Khalti
+                      </button>
+                    )}
+                    {paymentMethod === PaymentMethod.Esewa && (
+                      <button
+                        type="submit"
+                        className="group w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-5 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+                      >
+                        <FaShieldAlt className="text-2xl group-hover:animate-bounce" />
+                        Pay with eSewa
+                      </button>
+                    )}
+                  </div>
+                </form>
               </div>
             </div>
-          </div>
-          <div className="max-w-4xl w-full h-max rounded-md px-4 py-8 sticky top-0">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Complete your order
-            </h2>
-            <form className="mt-8" onSubmit={handleSubmit}>
-              <div>
-                <h3 className="text-sm lg:text-base text-gray-800 mb-4">
-                  Personal Details
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <input
-                      type="text"
-                      name="firstName"
-                      onChange={handleChange}
-                      placeholder="First Name"
-                      className="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
-                    />
+
+            {/* Order Summary Sidebar */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-2xl shadow-2xl p-8 sticky top-8">
+                <h2 className="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b-2 border-gray-100">
+                  Order Summary
+                </h2>
+
+                {/* Cart Items */}
+                <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
+                  {items.length > 0 ? (
+                    items.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-start gap-4 pb-4 border-b border-gray-100 last:border-0"
+                      >
+                        <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden shadow-md">
+                          <img
+                            src={`http://localhost:4000/${item.Product?.productImageUrl}`}
+                            alt={item?.Product?.productName}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm font-semibold text-gray-800 truncate">
+                            {item?.Product?.productName}
+                          </h3>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Qty: {item?.quantity}
+                          </p>
+                          <p className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mt-1">
+                            Rs. {(item?.Product?.productPrice * item?.quantity).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <FaShoppingBag className="text-5xl text-gray-300 mx-auto mb-3" />
+                      <p className="text-gray-500">No items in cart</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Price Breakdown */}
+                <div className="space-y-4 mb-6">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Subtotal</span>
+                    <span className="text-lg font-semibold text-gray-800">
+                      Rs. {subTotal.toLocaleString()}
+                    </span>
                   </div>
-                  <div>
-                    <input
-                      type="text"
-                      name="lastName"
-                      onChange={handleChange}
-                      placeholder="Last Name"
-                      className="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
-                    />
+                  <div className="flex justify-between items-center pb-4 border-b-2 border-gray-100">
+                    <span className="text-gray-600 flex items-center gap-2">
+                      <FaTruck className="text-blue-600" />
+                      Shipping
+                    </span>
+                    <span className="text-lg font-semibold text-gray-800">
+                      Rs. {shippingCost}
+                    </span>
                   </div>
-                  <div>
-                    <input
-                      type="email"
-                      name="email"
-                      onChange={handleChange}
-                      placeholder="Email"
-                      className="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
-                    />
+                  <div className="flex justify-between items-center pt-2">
+                    <span className="text-xl font-bold text-gray-800">Total</span>
+                    <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                      Rs. {total.toLocaleString()}
+                    </span>
                   </div>
-                  <div>
-                    <input
-                      type="number"
-                      name="phoneNumber"
-                      onChange={handleChange}
-                      placeholder="Phone No."
-                      className="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
-                    />
+                </div>
+
+                {/* Trust Badges */}
+                <div className="pt-6 border-t-2 border-gray-100 space-y-3">
+                  <div className="flex items-center gap-3 text-gray-600">
+                    <FaShieldAlt className="text-green-600 text-xl" />
+                    <span className="text-sm">Secure Payment</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-gray-600">
+                    <FaTruck className="text-blue-600 text-xl" />
+                    <span className="text-sm">Fast Delivery</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-gray-600">
+                    <FaCheckCircle className="text-purple-600 text-xl" />
+                    <span className="text-sm">100% Satisfaction Guaranteed</span>
                   </div>
                 </div>
               </div>
-              <div className="mt-8">
-                <h3 className="text-sm lg:text-base text-gray-800 mb-4">
-                  Shipping Address
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <input
-                      type="text"
-                      name="addressLine"
-                      onChange={handleChange}
-                      placeholder="Address Line"
-                      className="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="text"
-                      name="city"
-                      onChange={handleChange}
-                      placeholder="City"
-                      className="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="text"
-                      name="state"
-                      onChange={handleChange}
-                      placeholder="State"
-                      className="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="text"
-                      name="zipCode"
-                      onChange={handleChange}
-                      placeholder="Zip Code"
-                      className="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label htmlFor="paymentMethod">Payment Method : </label>
-                <select
-                  name=""
-                  id="paymentMethod"
-                  onChange={(e) =>
-                    handlePaymentMethod(e.target.value as PaymentMethod)
-                  }
-                >
-                  <option value={PaymentMethod.Cod}>COD</option>
-                  <option value={PaymentMethod.Khalti}>Khalti</option>
-                  <option value={PaymentMethod.Esewa}>Esewa</option>
-                </select>
-              </div>
-              <div className="flex gap-4 max-md:flex-col mt-8">
-                {paymentMethod === PaymentMethod.Cod && (
-                  <button
-                    type="submit"
-                    className="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    Pay on COD
-                  </button>
-                )}
-                {paymentMethod === PaymentMethod.Khalti && (
-                  <button
-                    type="submit"
-                    className="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-purple-600 hover:bg-purple-700 text-white"
-                  >
-                    Pay with Khalti
-                  </button>
-                )}
-                {paymentMethod === PaymentMethod.Esewa && (
-                  <button
-                    type="submit"
-                    className="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-green-600 hover:bg-green-700 text-white"
-                  >
-                    Pay with Esewa
-                  </button>
-                )}
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>

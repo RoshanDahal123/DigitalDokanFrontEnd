@@ -6,9 +6,19 @@ import {
   updateOrderStatusinSlice,
 } from "../../store/orderSlice";
 import { Link } from "react-router-dom";
-
 import { socket } from "../../App";
 import { OrderStatus } from "../my-order-details";
+import { 
+  FaSearch, 
+  FaShoppingBag, 
+  FaEye, 
+  FaClock, 
+  FaCheckCircle, 
+  FaTruck, 
+  FaTimesCircle,
+  FaMoneyBillWave,
+  FaArrowRight
+} from "react-icons/fa";
 
 const MyOrder = () => {
   const dispatch = useAppDispatch();
@@ -22,6 +32,7 @@ const MyOrder = () => {
       item?.orderStatus?.toLowerCase().includes(searchTerm) ||
       item.totalAmount == parseInt(searchTerm)
   );
+
   useEffect(() => {
     dispatch(fetchMyOrders());
   }, []);
@@ -34,97 +45,153 @@ const MyOrder = () => {
       }
     );
   }, [socket]);
+
+  const getStatusIcon = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "pending":
+        return <FaClock className="text-yellow-500 text-xl" />;
+      case "delivered":
+        return <FaCheckCircle className="text-green-500 text-xl" />;
+      case "ontheway":
+        return <FaTruck className="text-blue-500 text-xl" />;
+      case "cancelled":
+        return <FaTimesCircle className="text-red-500 text-xl" />;
+      default:
+        return <FaClock className="text-gray-500 text-xl" />;
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const baseClasses = "px-4 py-2 rounded-full text-sm font-semibold inline-flex items-center gap-2";
+    switch (status?.toLowerCase()) {
+      case "pending":
+        return <span className={`${baseClasses} bg-yellow-100 text-yellow-700`}>{getStatusIcon(status)} Pending</span>;
+      case "delivered":
+        return <span className={`${baseClasses} bg-green-100 text-green-700`}>{getStatusIcon(status)} Delivered</span>;
+      case "ontheway":
+        return <span className={`${baseClasses} bg-blue-100 text-blue-700`}>{getStatusIcon(status)} On the Way</span>;
+      case "cancelled":
+        return <span className={`${baseClasses} bg-red-100 text-red-700`}>{getStatusIcon(status)} Cancelled</span>;
+      default:
+        return <span className={`${baseClasses} bg-gray-100 text-gray-700`}>{getStatusIcon(status)} {status}</span>;
+    }
+  };
+
+  const getPaymentMethodBadge = (method: string) => {
+    const baseClasses = "px-3 py-1 rounded-lg text-xs font-semibold";
+    switch (method?.toLowerCase()) {
+      case "khalti":
+        return <span className={`${baseClasses} bg-purple-100 text-purple-700`}>Khalti</span>;
+      case "esewa":
+        return <span className={`${baseClasses} bg-green-100 text-green-700`}>eSewa</span>;
+      case "cod":
+        return <span className={`${baseClasses} bg-blue-100 text-blue-700`}>Cash on Delivery</span>;
+      default:
+        return <span className={`${baseClasses} bg-gray-100 text-gray-700`}>{method}</span>;
+    }
+  };
+
   return (
     <>
       <Navbar />
-      <div>
-        <div className="w-full flex justify-between items-center mb-3 mt-1 pl-3">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-800">
-              Shopping Cart
-            </h3>
-            <p className="text-slate-500">Review your selected items.</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 pt-8 pb-20">
+        <div className="container mx-auto px-4">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2">
+              My Orders
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Track and manage all your orders
+            </p>
           </div>
-          <div className="mx-3">
-            <div className="w-full max-w-sm min-w-[200px] relative">
+
+          {/* Search Bar */}
+          <div className="mb-8">
+            <div className="max-w-md">
               <div className="relative">
+                <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
                 <input
-                  className="bg-white w-full pr-11 h-10 pl-3 py-2  placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
-                  placeholder="Search for product..."
+                  type="text"
+                  placeholder="Search by Order ID, Status, Payment Method..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+                  className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 shadow-sm text-gray-700"
                 />
-                <button
-                  className="absolute h-8 w-8 right-1 top-1 my-auto px-2 flex items-center bg-white rounded "
-                  type="button"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={3}
-                    stroke="currentColor"
-                    className="w-8 h-8 text-slate-600"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                    />
-                  </svg>
-                </button>
               </div>
             </div>
           </div>
-        </div>
-        <div className="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
-          <table className="w-full text-left table-auto min-w-max">
-            <thead>
-              <tr>
-                <th className="p-4 text-sm font-normal leading-none text-slate-500">
-                  Order id
-                </th>
-                <th className="p-4 text-sm font-normal leading-none text-slate-500">
-                  Order Status
-                </th>
-                <th className="p-4 text-sm font-normal leading-none text-slate-500">
-                  Total Amount
-                </th>
-                <th className="p-4 text-sm font-normal leading-none text-slate-500">
-                  Payment Method
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {newItems.length > 0 &&
-                newItems.map((item) => {
-                  return (
-                    <tr className="hover:bg-slate-50">
-                      <td className="p-4 border-b border-slate-200 py-5">
-                        <p className="block font-semibold text-sm text-slate-800">
-                          <Link to={`/my-orders/${item?.id}`}> {item?.id}</Link>
-                        </p>
-                      </td>
-                      <td className="p-4 border-b border-slate-200 py-5">
-                        <p className="text-sm text-slate-500">
-                          {item?.orderStatus}
-                        </p>
-                      </td>
-                      <td className="p-4 border-b border-slate-200 py-5">
-                        <p className="text-sm text-slate-500">
-                          {item?.totalAmount}
-                        </p>
-                      </td>
-                      <td className="p-4 border-b border-slate-200 py-5">
-                        <p className="text-sm text-slate-500">
-                          {item.Payment?.paymentMethod}
-                        </p>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
+
+          {/* Orders List */}
+          {newItems.length > 0 ? (
+            <div className="space-y-4">
+              {newItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 transform hover:-translate-y-1"
+                >
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    {/* Order Info */}
+                    <div className="flex-1 space-y-3">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <FaShoppingBag className="text-white text-xl" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-lg font-bold text-gray-800 mb-1">
+                            Order #{item.id.substring(0, 8).toUpperCase()}
+                          </h3>
+                          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+                            <div className="flex items-center gap-2">
+                              <FaMoneyBillWave className="text-blue-500" />
+                              <span className="font-semibold text-gray-800">Rs. {item.totalAmount?.toLocaleString() || 0}</span>
+                            </div>
+                            <span className="text-gray-400">•</span>
+                            {getPaymentMethodBadge(item.Payment?.paymentMethod || "cod")}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Status and Action */}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                      <div>
+                        {getStatusBadge(item.orderStatus || "pending")}
+                      </div>
+                      <Link to={`/my-orders/${item.id}`}>
+                        <button className="group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                          <FaEye />
+                          View Details
+                          <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-3xl shadow-2xl p-12 text-center">
+              <div className="w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <FaShoppingBag className="text-6xl text-blue-600" />
+              </div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                {searchTerm ? "No Orders Found" : "No Orders Yet"}
+              </h2>
+              <p className="text-gray-600 mb-8 text-lg">
+                {searchTerm 
+                  ? "Try adjusting your search terms" 
+                  : "Start shopping to see your orders here"}
+              </p>
+              <Link to="/products">
+                <button className="group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3 mx-auto">
+                  <FaShoppingBag className="group-hover:animate-bounce" />
+                  Start Shopping
+                  <FaArrowRight className="group-hover:translate-x-2 transition-transform" />
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </>
