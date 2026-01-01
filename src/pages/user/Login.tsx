@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { loginUser, clearResetState } from "../../store/authSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEnvelope, FaLock, FaUser, FaArrowRight, FaShoppingBag } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaArrowRight, FaShoppingBag } from "react-icons/fa";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 function Login() {

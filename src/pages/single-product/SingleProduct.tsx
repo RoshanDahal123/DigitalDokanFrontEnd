@@ -5,8 +5,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../globals/component/Navbar";
 import { addToCart } from "../../store/cartSlice";
 import { addToWishlist, removeFromWishlist, checkWishlistStatus } from "../../store/wishlistSlice";
+import { fetchProductReviews } from "../../store/reviewSlice";
 import ReviewSection from "./components/ReviewSection";
-import { FaHeart, FaRegHeart, FaStar, FaShoppingCart, FaBox, FaTruck, FaShieldAlt } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaStar, FaShoppingCart, FaBox, FaTruck, FaShieldAlt, FaRegStar } from "react-icons/fa";
 import { BsLightning } from "react-icons/bs";
 
 function SingleProduct() {
@@ -14,6 +15,7 @@ function SingleProduct() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { product } = useAppSelector((store) => store.products);
+  const { productReviews } = useAppSelector((store) => store.review);
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -24,6 +26,7 @@ function SingleProduct() {
   useEffect(() => {
     if (id) {
       dispatch(fetchProduct(id));
+      dispatch(fetchProductReviews(id));
       checkWishlist();
     }
   }, [id]);
@@ -57,12 +60,24 @@ function SingleProduct() {
     }
 
     if (id) {
-      if (isInWishlist) {
-        await dispatch(removeFromWishlist(id));
-        setIsInWishlist(false);
-      } else {
-        await dispatch(addToWishlist(id));
-        setIsInWishlist(true);
+      try {
+        if (isInWishlist) {
+          const result:any = await dispatch(removeFromWishlist(id));
+          if (result?.success) {
+            setIsInWishlist(false);
+            alert("Removed from wishlist!");
+          }
+        } else {
+          const result:any = await dispatch(addToWishlist(id));
+          if (result?.success) {
+            setIsInWishlist(true);
+            alert("Added to wishlist!");
+          }
+        }
+        // Re-check wishlist status
+        await checkWishlist();
+      } catch (error) {
+        console.error("Wishlist toggle error:", error);
       }
     }
   };
@@ -135,18 +150,31 @@ function SingleProduct() {
                 {product.productName}
               </h1>
 
-              {/* Rating */}
-              <div className="flex items-center gap-2 mb-6">
-                <div className="flex">
-                  {[...Array(5)].map((_, index) => (
-                    <FaStar
-                      key={index}
-                      className={`${index < 4 ? "text-yellow-400" : "text-gray-300"} text-xl`}
-                    />
-                  ))}
+              {/* Rating - Only show if there are reviews */}
+              {productReviews && productReviews.totalReviews > 0 && (
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="flex">
+                    {[...Array(5)].map((_, index) => {
+                      const averageRating = productReviews?.averageRating 
+                        ? parseFloat(productReviews.averageRating) 
+                        : 0;
+                      const isFullStar = index < Math.floor(averageRating);
+                      const isHalfStar = index === Math.floor(averageRating) && averageRating % 1 >= 0.5;
+                      
+                      return isFullStar ? (
+                        <FaStar key={index} className="text-yellow-400 text-xl" />
+                      ) : isHalfStar ? (
+                        <FaStar key={index} className="text-yellow-400 text-xl" style={{ clipPath: 'inset(0 50% 0 0)' }} />
+                      ) : (
+                        <FaRegStar key={index} className="text-gray-300 text-xl" />
+                      );
+                    })}
+                  </div>
+                  <span className="text-gray-600">
+                    ({productReviews.averageRating}) • {productReviews.totalReviews} {productReviews.totalReviews === 1 ? 'review' : 'reviews'}
+                  </span>
                 </div>
-                <span className="text-gray-600">(4.0) • 128 reviews</span>
-              </div>
+              )}
 
               {/* Price */}
               <div className="mb-6">

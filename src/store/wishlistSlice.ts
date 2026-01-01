@@ -76,9 +76,14 @@ export const addToWishlist = (productId: string) => {
       const response = await APIWITHTOKEN.post("/wishlist", { productId });
       if (response.status === 201) {
         dispatch(fetchWishlist());
+        return { success: true };
       }
     } catch (error: any) {
-      dispatch(setError(error.response?.data?.message || "Failed to add to wishlist"));
+      console.error("Add to wishlist error:", error);
+      const message = error.response?.data?.message || "Failed to add to wishlist";
+      dispatch(setError(message));
+      alert(message);
+      return { success: false, message };
     }
   };
 };
@@ -89,9 +94,13 @@ export const removeFromWishlist = (productId: string) => {
       const response = await APIWITHTOKEN.delete(`/wishlist/${productId}`);
       if (response.status === 200) {
         dispatch(removeFromWishlistState(productId));
+        return { success: true };
       }
     } catch (error: any) {
-      dispatch(setError(error.response?.data?.message || "Failed to remove from wishlist"));
+      console.error("Remove from wishlist error:", error);
+      const message = error.response?.data?.message || "Failed to remove from wishlist";
+      dispatch(setError(message));
+      return { success: false, message };
     }
   };
 };

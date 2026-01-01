@@ -14,6 +14,7 @@ import Cart from "./pages/cart/Cart";
 import Checkout from "./pages/checkout/Checkout";
 import MyOrder from "./pages/myOrder/MyOrder";
 import MyOrderDetail from "./pages/my-order-details/MyOrderDetail";
+import Wishlist from "./pages/wishlist/Wishlist";
 
 import Category from "./pages/admin/categories/Category";
 import User from "./pages/admin/users/User";
@@ -46,6 +47,7 @@ function App() {
           <Route path="/products" element={<Product />} />
           <Route path="/product/:id" element={<SingleProduct />} />
           <Route path="/my-cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+          <Route path="/my-wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
           <Route path="/my-checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
           <Route path="/my-orders" element={<ProtectedRoute><MyOrder /></ProtectedRoute>} />
           <Route path="/my-orders/:id" element={<ProtectedRoute><MyOrderDetail /></ProtectedRoute>} />

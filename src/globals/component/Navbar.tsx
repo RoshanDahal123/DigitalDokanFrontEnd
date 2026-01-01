@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "../../store/cartSlice";
 import { logoutUser } from "../../store/authSlice";
-import { FaShoppingCart, FaUser, FaSignOutAlt, FaUserPlus, FaSignInAlt, FaTachometerAlt, FaBox, FaClipboardList } from "react-icons/fa";
+import { FaShoppingCart, FaUser, FaSignOutAlt, FaUserPlus, FaSignInAlt, FaTachometerAlt, FaBox, FaClipboardList, FaHeart } from "react-icons/fa";
 
 function Navbar() {
   const reduxToken = useAppSelector((store) => store.auth.user.token);
@@ -86,6 +86,17 @@ function Navbar() {
                 >
                   <FaClipboardList className="text-xl" />
                   <span>My Orders</span>
+                </Link>
+                <Link 
+                  to="/my-wishlist" 
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    scrolled 
+                      ? "text-gray-700 hover:text-blue-600 hover:bg-blue-50" 
+                      : "text-white hover:bg-white/20"
+                  }`}
+                >
+                  <FaHeart className="text-xl" />
+                  <span>Wishlist</span>
                 </Link>
                 <Link 
                   to="/my-cart" 
@@ -242,6 +253,18 @@ function Navbar() {
                     >
                       <FaClipboardList />
                       <span>My Orders</span>
+                    </Link>
+                    <Link
+                      to="/my-wishlist"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all ${
+                        scrolled
+                          ? "text-gray-700 hover:bg-blue-50"
+                          : "text-white hover:bg-white/20"
+                      }`}
+                    >
+                      <FaHeart />
+                      <span>Wishlist</span>
                     </Link>
                     <Link
                       to="/my-cart"

@@ -100,11 +100,15 @@ export const addReview = (data: {
       if (response.status === 201 || response.status === 200) {
         dispatch(fetchProductReviews(data.productId));
         dispatch(fetchUserProductReview(data.productId));
+        alert(response.data.message || "Review submitted successfully!");
         return { success: true };
       }
     } catch (error: any) {
-      dispatch(setError(error.response?.data?.message || "Failed to add review"));
-      return { success: false, message: error.response?.data?.message };
+      console.error("Add review error:", error);
+      const message = error.response?.data?.message || "Failed to add review";
+      dispatch(setError(message));
+      alert(message);
+      return { success: false, message };
     }
   };
 };
@@ -119,6 +123,7 @@ export const fetchUserProductReview = (productId: string) => {
         dispatch(setUserProductReview(response.data.data));
       }
     } catch (error: any) {
+      console.error("Fetch user review error:", error);
       dispatch(setUserProductReview(null));
     }
   };
@@ -131,9 +136,13 @@ export const deleteReview = (reviewId: string, productId: string) => {
       if (response.status === 200) {
         dispatch(fetchProductReviews(productId));
         dispatch(setUserProductReview(null));
+        alert("Review deleted successfully!");
       }
     } catch (error: any) {
-      dispatch(setError(error.response?.data?.message || "Failed to delete review"));
+      console.error("Delete review error:", error);
+      const message = error.response?.data?.message || "Failed to delete review";
+      dispatch(setError(message));
+      alert(message);
     }
   };
 };
