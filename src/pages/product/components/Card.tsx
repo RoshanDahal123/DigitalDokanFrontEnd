@@ -131,20 +131,28 @@ const Card: React.FC<ICardProp> = ({ product }) => {
               {product.productName}
             </h3>
 
-            {/* Rating */}
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex">
-                {[...Array(5)].map((_, index) => (
-                  <FaStar
-                    key={index}
-                    className={`${
-                      index < 4 ? "text-yellow-400" : "text-gray-300"
-                    } text-sm`}
-                  />
-                ))}
+            {/* Rating - Only show if product has reviews */}
+            {product.averageRating && product.totalReviews && product.totalReviews > 0 ? (
+              <div className="flex items-center gap-2 mb-4">
+                <div className="flex">
+                  {[...Array(5)].map((_, index) => (
+                    <FaStar
+                      key={index}
+                      className={`${
+                        index < Math.round(product.averageRating || 0) ? "text-yellow-400" : "text-gray-300"
+                      } text-sm`}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-gray-600 font-medium">
+                  ({product.averageRating.toFixed(1)}) • {product.totalReviews} {product.totalReviews === 1 ? 'review' : 'reviews'}
+                </span>
               </div>
-              <span className="text-sm text-gray-600 font-medium">(4.0)</span>
-            </div>
+            ) : (
+              <div className="mb-4 h-6 flex items-center">
+                <span className="text-sm text-gray-400">No reviews yet</span>
+              </div>
+            )}
 
             {/* Price */}
             <div className="flex items-center justify-between mb-4">

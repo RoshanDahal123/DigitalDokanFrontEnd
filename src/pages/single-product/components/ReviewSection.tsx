@@ -181,38 +181,40 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ productId }) => {
         {/* Reviews List */}
         <div className="space-y-6">
           {productReviews?.reviews && productReviews.reviews.length > 0 ? (
-            productReviews.reviews.map((review) => (
-              <div
-                key={review.id}
-                className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
-                        {review?.User?.username?.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-900">
-                          {review?.User?.username}
-                        </p>
-                        {renderStars(review.rating)}
+            productReviews.reviews
+              .filter((review) => review.rating && review.rating >= 1 && review.rating <= 5)
+              .map((review) => (
+                <div
+                  key={review.id}
+                  className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
+                          {review?.User?.username?.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">
+                            {review?.User?.username}
+                          </p>
+                          {renderStars(review.rating)}
+                        </div>
                       </div>
                     </div>
+                    <span className="text-sm text-gray-500">
+                      {new Date(review.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
                   </div>
-                  <span className="text-sm text-gray-500">
-                    {new Date(review.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
+                  {review.comment && review.comment.trim() !== "" && (
+                    <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+                  )}
                 </div>
-                {review.comment && (
-                  <p className="text-gray-700 leading-relaxed">{review.comment}</p>
-                )}
-              </div>
-            ))
+              ))
           ) : (
             <div className="text-center py-12 bg-gray-50 rounded-xl">
               <div className="text-5xl mb-4">💬</div>

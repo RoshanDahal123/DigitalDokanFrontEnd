@@ -16,6 +16,8 @@ export interface IProduct {
   updatedAt: string;
   categoryId: string;
   Category: ICategory;
+  averageRating?: number;
+  totalReviews?: number;
 }
 export interface IProducts {
   products: IProduct[];
