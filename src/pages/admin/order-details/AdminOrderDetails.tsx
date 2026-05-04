@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom";
 import AdminLayout from "../AdminLayout";
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { fetchAdminOrderDetail, updateOrderStatusByAdmin } from "../../../store/adminOrderSlice";
+import { fetchAdminOrderDetail, updateOrderStatusByAdmin, updatePaymentStatusByAdmin } from "../../../store/adminOrderSlice";
 import { ChangeEvent, useEffect } from "react";
 import { socket } from "../../../App";
+import { FaBox, FaCreditCard, FaTruck, FaUser, FaClipboardList } from "react-icons/fa";
 
 const AdminOrderDetail = () => {
   const { id } = useParams();
@@ -31,186 +32,222 @@ const AdminOrderDetail = () => {
     }
   };
 
+  const handlePaymentStatusChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (id && e.target.value) {
+      dispatch(updatePaymentStatusByAdmin(id, e.target.value));
+    }
+  };
+
+  if (!orderDetail || orderDetail.length === 0) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-full min-h-screen">
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  const orderInfo = orderDetail[0]?.Order;
+
   return (
     <AdminLayout>
-      <>
-        <div className="py-2 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
-          <div className="flex justify-start item-start space-y-2 flex-col">
-            <h1 className="text-3xl text-gray-800  lg:text-4xl font-semibold leading-7 lg:leading-9">
-              Order #{orderDetail[0]?.orderId}
-            </h1>
-            <p className="text-base dark:text-gray-300 font-medium leading-6 text-gray-600">
-              {new Date(orderDetail[0]?.createdAt).toLocaleDateString()}
-            </p>
-            <p>Order Status : {orderDetail[0]?.Order?.orderStatus}</p>
-          </div>
-          <div className="flex justify-start item-start space-y-2 flex-col"></div>
-          <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
-            <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
-              <div className="flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
-                <p className="text-lg md:text-xl dark:text-white font-semibold leading-6 xl:leading-5 text-gray-800">
-                  Customer’s Cart
-                </p>
-                {orderDetail.length > 0 &&
-                  orderDetail.map((od) => {
-                    return (
-                      <div
-                        key={od.id}
-                        className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full"
-                      >
-                        <div className="pb-4 md:pb-8 w-full md:w-40">
-                          <img
-                            className="w-full hidden md:block"
-                            src={`http://localhost:4000/${od?.Product?.productImageUrl}`}
-                            alt="dress"
-                          />
-                        </div>
-                        <div className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
-                          <div className="w-full flex flex-col justify-start items-start space-y-8">
-                            <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">
-                              {od?.Product?.productName}
-                            </h3>
-                            <div className="flex justify-start items-start flex-col space-y-2">
-                              <p className="text-sm dark:text-white leading-none text-gray-800">
-                                <span className="dark:text-gray-400 text-gray-300">
-                                  Category:{" "}
-                                </span>{" "}
-                                {od?.Product?.Category?.categoryName}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex justify-between space-x-8 items-start w-full">
-                            <p className="text-base dark:text-white xl:text-lg leading-6">
-                              Rs.{od?.Product?.productPrice}{" "}
-                            </p>
-                            <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">
-                              {od?.quantity}
-                            </p>
-                            <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">
-                              Rs.{od?.Product?.productPrice * od?.quantity}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+      <div className="px-4 py-8 md:px-8 xl:px-12 2xl:container 2xl:mx-auto bg-gray-50 min-h-screen">
+        
+        {/* Header Section */}
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl shadow-xl overflow-hidden mb-8">
+          <div className="px-8 py-10 text-white flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-6">
+              <div className="hidden sm:flex w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full items-center justify-center shadow-inner">
+                <FaClipboardList className="text-4xl text-white" />
               </div>
-              <div className="flex justify-center flex-col md:flex-row  items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
-                <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-gray-800 space-y-6">
-                  <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">
-                    Summary
-                  </h3>
-                  <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
-                    <div className="flex justify-between w-full">
-                      <p className="text-base dark:text-white leading-4 text-gray-800">
-                        Total+Shipping
-                      </p>
-                      <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                        Rs.{orderDetail[0]?.Order?.totalAmount}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col justify-center px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-gray-800 space-y-6">
-                  <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">
-                    Shipping
-                  </h3>
-                  <div className="flex justify-between items-start w-full">
-                    <div className="flex justify-center items-center space-x-4">
-                      <div className="w-8 h-8">
-                        <img
-                          className="w-full h-full"
-                          alt="logo"
-                          src="https://i.ibb.co/L8KSdNQ/image-3.png"
-                        />
-                      </div>
-                      <div className="flex flex-col justify-start items-center">
-                        <p className="text-lg leading-6 dark:text-white font-semibold text-gray-800">
-                          DPD Delivery
-                          <br />
-                          <span className="font-normal">
-                            Delivery with 24 Hours
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                    <p className="text-lg font-semibold leading-6 dark:text-white text-gray-800">
-                      Rs.100
-                    </p>
-                  </div>
-                </div>
+              <div>
+                <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight mb-2">
+                  Order #{orderDetail[0]?.orderId}
+                </h1>
+                <p className="text-blue-100 font-medium opacity-90 flex items-center gap-2">
+                  Placed on {new Date(orderDetail[0]?.createdAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                </p>
               </div>
             </div>
-            <div className="bg-gray-50 dark:bg-gray-800 w-full xl:w-96 flex justify-between items-center md:items-start px-4 py-6 md:p-6 xl:p-8 flex-col">
-              <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">
-                Customer
-              </h3>
-              <div className="flex flex-col md:flex-row xl:flex-col justify-start items-stretch h-full w-full md:space-x-6 lg:space-x-8 xl:space-x-0">
-                <div className="flex flex-col justify-start items-start flex-shrink-0">
-                  <div className="flex justify-center w-full md:justify-start items-center space-x-4 py-8 border-b border-gray-200">
-                    <div className="flex justify-start items-start flex-col space-y-2">
-                      <p className="text-sm dark:text-gray-300 leading-5 text-gray-600">
-                        Phone No: {orderDetail[0]?.Order?.phoneNumber}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-between xl:h-full items-stretch w-full flex-col mt-6 md:mt-0">
-                  <div className="flex justify-center md:justify-start xl:flex-col flex-col md:space-x-6 lg:space-x-8 xl:space-x-0 space-y-4 xl:space-y-12 md:space-y-0 md:flex-row items-center md:items-start">
-                    <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4 xl:mt-8">
-                      <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">
-                        Shipping Address
-                      </p>
-                      <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
-                        Full Name :{orderDetail[0]?.Order?.firstName}{" "}
-                        {orderDetail[0]?.Order?.lastName}
-                      </p>
-                      <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
-                        {orderDetail[0]?.Order?.addressLine},
-                        {orderDetail[0]?.Order?.city},
-                        {orderDetail[0]?.Order?.state}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4">
-                    {/* <div className="flex w-full justify-center items-center md:justify-start md:items-start">
-                      <label htmlFor="">Change Payment Status</label>
-                      <select
-                        name=""
-                        id=""
-                        className="w-full md:w-48 lg:w-64 xl:w-72 bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      >
-                        <option value="paid">paid</option>
-                        <option value="unpaid">unpaid</option>
-                      </select>
-                    </div> */}
-
-                    <div className="flex w-full justify-center items-center md:justify-start md:items-start">
-                      <label htmlFor="" className="text-gray-900 font-bold  ">
-                        {" "}
-                        Change Order Status
-                      </label>
-                      <select
-                        name="changeOrderStatus"
-                        className="w-full md:w-48 lg:w-64 xl:w-72 bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        id=""
-                        value={orderDetail[0]?.Order?.orderStatus || 'pending'}
-                        onChange={handleOrderStatusChange}
-                      >
-                        <option value="pending">pending</option>
-                        <option value="delivered">delivered</option>
-                        <option value="ontheway">ontheway</option>
-                        <option value="preparation">preparation</option>
-                        <option value="cancelled">cancelled</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="flex flex-col items-center md:items-end gap-2 bg-white/10 px-6 py-4 rounded-2xl backdrop-blur-sm">
+              <span className="uppercase tracking-widest text-xs font-bold text-blue-100">Order Totals</span>
+              <span className="text-4xl font-bold font-mono tracking-tight text-white">Rs. {orderInfo?.totalAmount}</span>
             </div>
           </div>
         </div>
-      </>
+
+        <div className="flex flex-col xl:flex-row gap-8 items-start w-full">
+          
+          {/* Left Column: Cart Items */}
+          <div className="w-full xl:w-2/3 flex flex-col gap-8">
+            <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+              <div className="px-8 py-6 border-b border-gray-100 flex items-center gap-3">
+                <FaBox className="text-blue-600 text-xl" />
+                <h2 className="text-2xl font-black text-gray-800">Customer's Cart</h2>
+              </div>
+              <div className="p-8 flex flex-col gap-6">
+                {orderDetail.map((od) => (
+                  <div key={od.id} className="flex flex-col md:flex-row items-center gap-6 p-4 rounded-2xl hover:bg-gray-50 transition-colors border border-gray-50">
+                    <div className="w-full md:w-32 h-32 flex-shrink-0 bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                      <img
+                        className="w-full h-full object-contain"
+                        src={`http://localhost:4000/${od?.Product?.productImageUrl}`}
+                        alt={od?.Product?.productName}
+                      />
+                    </div>
+                    <div className="flex-grow flex flex-col justify-between w-full gap-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-1">{od?.Product?.productName}</h3>
+                        <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold uppercase tracking-wider">
+                          {od?.Product?.Category?.categoryName}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+                        <div>
+                          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Price</p>
+                          <p className="font-bold text-gray-800">Rs. {od?.Product?.productPrice}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Qty</p>
+                          <p className="font-bold text-gray-800">{od?.quantity}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Subtotal</p>
+                          <p className="font-bold text-blue-600 text-lg">Rs. {od?.Product?.productPrice * od?.quantity}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Summary Cards below Cart */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col gap-4">
+                 <div className="flex items-center gap-3">
+                   <FaTruck className="text-purple-600 text-xl" />
+                   <h3 className="text-xl font-bold text-gray-800">Shipping Method</h3>
+                 </div>
+                 <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
+                   <div>
+                     <p className="font-bold text-gray-900">DPD Express</p>
+                     <p className="text-sm text-gray-500">Delivery within 24 Hours</p>
+                   </div>
+                   <p className="font-bold text-purple-600">Rs. 100</p>
+                 </div>
+              </div>
+              <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col gap-4">
+                 <h3 className="text-xl font-bold text-gray-800">Summary</h3>
+                 <div className="flex justify-between items-center text-lg font-black border-t border-gray-100 pt-4 mt-2">
+                   <span className="text-gray-600">Total + Shipping</span>
+                   <span className="text-blue-600 text-2xl">Rs. {orderInfo?.totalAmount}</span>
+                 </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Right Column: Customer & Status Controls */}
+          <div className="w-full xl:w-1/3 flex flex-col gap-8">
+            
+            {/* Status Management */}
+            <div className="bg-white rounded-3xl shadow-lg border border-blue-100 overflow-hidden ring-1 ring-blue-50">
+              <div className="px-6 py-5 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-blue-100">
+                <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                  <FaBox className="text-blue-500"/> Manage Status
+                </h3>
+              </div>
+              <div className="p-6 flex flex-col gap-6">
+                
+                {/* Order Status Dropdown */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="orderStatus" className="text-sm font-bold text-gray-700 tracking-wide uppercase">
+                    Order Status
+                  </label>
+                  <div className="relative">
+                    <select
+                      name="changeOrderStatus"
+                      id="orderStatus"
+                      value={orderInfo?.orderStatus || 'pending'}
+                      onChange={handleOrderStatusChange}
+                      className="w-full appearance-none bg-white border-2 border-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all cursor-pointer"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="preparation">Preparation</option>
+                      <option value="ontheway">On The Way</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                      <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Payment Status Dropdown */}
+                <div className="flex flex-col gap-2 pt-4 border-t border-gray-100">
+                  <label htmlFor="paymentStatus" className="text-sm font-bold text-gray-700 tracking-wide uppercase flex items-center gap-2">
+                    <FaCreditCard className="text-purple-500" /> Payment Status
+                  </label>
+                  <div className="relative">
+                    <select
+                      name="changePaymentStatus"
+                      id="paymentStatus"
+                      value={orderInfo?.Payment?.paymentStatus || 'unpaid'}
+                      onChange={handlePaymentStatusChange}
+                      className="w-full appearance-none bg-white border-2 border-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all cursor-pointer"
+                    >
+                      <option value="paid">Paid</option>
+                      <option value="unpaid">Unpaid</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                      <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Customer Details */}
+            <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+               <div className="px-6 py-5 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+                <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                  <FaUser className="text-gray-500"/> Customer Details
+                </h3>
+              </div>
+              <div className="p-6 flex flex-col gap-6">
+                <div>
+                  <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Full Name</p>
+                  <p className="text-gray-900 font-semibold">{orderInfo?.firstName} {orderInfo?.lastName}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Contact Details</p>
+                  <p className="text-gray-900 font-semibold">{orderInfo?.phoneNumber}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Shipping Address</p>
+                  <address className="text-gray-900 font-semibold not-italic leading-relaxed">
+                    {orderInfo?.addressLine} <br />
+                    {orderInfo?.city}, {orderInfo?.state} <br />
+                    ZIP: {orderInfo?.zipCode || "N/A"}
+                  </address>
+                </div>
+                <div className="pt-4 border-t border-gray-100">
+                  <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Payment Method</p>
+                  <span className="inline-block px-3 py-1 bg-green-50 text-green-700 rounded-lg text-sm font-bold uppercase tracking-wider border border-green-200 mt-1">
+                    {orderInfo?.Payment?.paymentMethod || "N/A"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
     </AdminLayout>
   );
 };

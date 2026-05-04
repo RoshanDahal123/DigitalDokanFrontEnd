@@ -84,6 +84,23 @@ export function updateOrderStatusByAdmin(orderId: string, orderStatus: string) {
   };
 }
 
+export function updatePaymentStatusByAdmin(orderId: string, paymentStatus: string) {
+  return async function updatePaymentStatusByAdminThunk(dispatch: AppDispatch) {
+    try {
+      const response = await APIWITHADMINTOKEN.patch("/order/admin/change-payment-status/" + orderId, {
+        paymentStatus
+      });
+
+      if (response.status === 200) {
+        dispatch(fetchAdminOrderDetail(orderId));
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
 export function fetchAdminOrderDetail(id: string) {
   return async function fetchAdminOrderDetailThunk(dispatch: AppDispatch) {
     try {
