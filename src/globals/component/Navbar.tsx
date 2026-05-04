@@ -16,7 +16,7 @@ function Navbar() {
   // Check login status on component mount and when reduxToken changes
   const localStorageToken = localStorage.getItem("token");
   const adminLocalStorageToken = localStorage.getItem("adminToken");
-  const isLoggedIn = !!localStorageToken || !!reduxToken;
+  const isLoggedIn = !!localStorageToken || !!adminLocalStorageToken || !!reduxToken;
   const isAdmin = !!adminLocalStorageToken && (reduxToken === adminLocalStorageToken || !reduxToken);
 
   useEffect(() => {

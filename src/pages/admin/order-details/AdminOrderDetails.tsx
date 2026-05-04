@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import AdminLayout from "../AdminLayout";
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { fetchAdminOrderDetail } from "../../../store/adminOrderSlice";
-import { ChangeEvent, useEffect, useState } from "react";
+import { fetchAdminOrderDetail, updateOrderStatusByAdmin } from "../../../store/adminOrderSlice";
+import { ChangeEvent, useEffect } from "react";
 import { socket } from "../../../App";
 
 const AdminOrderDetail = () => {
@@ -10,26 +10,26 @@ const AdminOrderDetail = () => {
 
   const dispatch = useAppDispatch();
   const { orderDetail } = useAppSelector((store) => store.order);
-  const [handleOrderStatus, sethandleOrderStatus] = useState<boolean>(false);
+  
   useEffect(() => {
     if (id) {
       dispatch(fetchAdminOrderDetail(id));
     }
-  }, []);
+  }, [id, dispatch]);
+
   const handleOrderStatusChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    if (id) {
+    if (id && e.target.value) {
+      // 1. Dispatch REST API call to robustly update DB and reload order slice
+      dispatch(updateOrderStatusByAdmin(id, e.target.value));
+
+      // 2. Emit Socket IO event for client notification handling
       socket.emit("updateOrderStatus", {
         status: e.target.value,
         orderId: id,
         userId: orderDetail[0]?.Order?.userId,
       });
-      sethandleOrderStatus(true);
     }
   };
-  useEffect(() => {
-    dispatch(fetchAdminOrderDetail(id!));
-    sethandleOrderStatus(false);
-  }, [handleOrderStatus]);
 
   return (
     <AdminLayout>
@@ -194,6 +194,7 @@ const AdminOrderDetail = () => {
                         name="changeOrderStatus"
                         className="w-full md:w-48 lg:w-64 xl:w-72 bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         id=""
+                        value={orderDetail[0]?.Order?.orderStatus || 'pending'}
                         onChange={handleOrderStatusChange}
                       >
                         <option value="pending">pending</option>

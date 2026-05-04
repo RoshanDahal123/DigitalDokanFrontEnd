@@ -54,10 +54,10 @@ function Login() {
   }, [isAdmin, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-md w-full">
         {/* Card */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div className="bg-gray-100 rounded-3xl shadow-2xl overflow-hidden">
           {/* Header Section */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-10 text-center">
             <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">

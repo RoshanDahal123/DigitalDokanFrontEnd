@@ -21,14 +21,43 @@ function Register() {
     password: "",
     email: "",
   });
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [localError, setLocalError] = useState("");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
+    
+    if (name === "password" && confirmPassword) {
+      if (value !== confirmPassword) {
+        setLocalError("Passwords do not match");
+      } else {
+        setLocalError("");
+      }
+    } else if (name !== "password" && localError === "Passwords do not match") {
+      // Keep password error if there's a mismatch, clear otherwise unless handled by confirm
+    } else {
+      setLocalError("");
+    }
+  };
+
+  const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setConfirmPassword(value);
+    
+    if (data.password && value !== data.password) {
+      setLocalError("Passwords do not match");
+    } else {
+      setLocalError("");
+    }
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (data.password !== confirmPassword) {
+      setLocalError("Passwords do not match");
+      return;
+    }
     setLoading(true);
     dispatch(registerUser(data));
   };
@@ -49,10 +78,10 @@ function Register() {
   }, [status, successMessage, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-md w-full">
         {/* Card */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div className="bg-gray-100 rounded-3xl shadow-2xl overflow-hidden">
           {/* Header Section */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-10 text-center">
             <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
@@ -77,7 +106,7 @@ function Register() {
             )}
 
             {/* Error Message */}
-            {error && (
+            {(error || localError) && (
               <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg animate-fade-in">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
@@ -85,7 +114,7 @@ function Register() {
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                     </svg>
                   </div>
-                  <p className="ml-3 text-sm text-red-700 font-medium">{error}</p>
+                  <p className="ml-3 text-sm text-red-700 font-medium">{localError || error}</p>
                 </div>
               </div>
             )}
@@ -169,6 +198,30 @@ function Register() {
                 <p className="mt-2 text-xs text-gray-500">
                   Must be at least 8 characters with uppercase, lowercase, number, and special character
                 </p>
+              </div>
+
+              {/* Confirm Password Field */}
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <FaLock className="text-gray-400" />
+                  </div>
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    required
+                    minLength={8}
+                    value={confirmPassword}
+                    onChange={handleConfirmPasswordChange}
+                    className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none text-gray-900"
+                    placeholder="Confirm your password"
+                  />
+                </div>
               </div>
 
               {/* Submit Button */}

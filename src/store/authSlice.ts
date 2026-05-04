@@ -124,12 +124,14 @@ export function loginUser(data: ILoginUser) {
 
         if (response.data.user.role === "admin" && response.data.token) {
           localStorage.setItem("adminToken", response.data.token);
+          localStorage.removeItem("token");
           dispatch(setToken(response.data.token));
         } else if (
           response.data.user.role === "customer" &&
           response.data.token
         ) {
           localStorage.setItem("token", response.data.token);
+          localStorage.removeItem("adminToken");
           dispatch(setToken(response.data.token));
         }
       } else {
@@ -256,6 +258,7 @@ export function logoutUser() {
     try {
       dispatch(removeToken());
       localStorage.removeItem("token");
+      localStorage.removeItem("adminToken");
       dispatch(setStatus(Status.SUCCESS));
     } catch (error) {
       dispatch(setStatus(Status.ERROR));

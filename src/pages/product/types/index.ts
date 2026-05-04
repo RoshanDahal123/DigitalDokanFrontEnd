@@ -8,7 +8,7 @@ export interface IProduct {
   id: string;
   productName: string;
   productDescription: string;
-  productTotalStock: string;
+  productTotalStock: number;
   productPrice: number;
   productDiscount: number;
   productImageUrl: string;
