@@ -9,6 +9,9 @@ export interface IAdminOrder {
   totalAmount: number;
   orderStatus: OrderStatus;
   Payment: IAdminPayment;
+  createdAt: string;
+  firstName: string;
+  lastName: string;
 }
 export interface IAdminPayment {
   paymentMethod: string;

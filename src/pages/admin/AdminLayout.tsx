@@ -72,15 +72,20 @@ function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
               </div>
 
               <div className="flex items-center space-x-4">
-                {/* Profile */}
-                <div className="flex items-center space-x-3 pl-4 border-l border-gray-300">
-                  <div className="text-right hidden sm:block">
-                    <p className="text-sm font-semibold text-gray-700">Admin User</p>
-                    <p className="text-xs text-gray-500">Administrator</p>
-                  </div>
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold shadow-md">
-                    A
-                  </div>
+                {/* Logout Button */}
+                <div className="flex items-center pl-4 border-l border-gray-300">
+                  <button 
+                    onClick={() => {
+                      localStorage.removeItem("token");
+                      window.location.href = "/login";
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                  >
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span className="font-semibold text-sm">Logout</span>
+                  </button>
                 </div>
               </div>
             </div>
