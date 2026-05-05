@@ -57,7 +57,7 @@ function AdminStats() {
     return products.slice(0, 4).map((p: any, index: number) => ({
       name: p.productName,
       sales: Math.floor(Math.random() * 200) + 50, // mock sales count
-      revenue: `$${p.productPrice || 0}`,
+      revenue: `NRs.${p.productPrice || 0}`,
       trend: index % 2 === 0 ? "up" : "down"
     }));
   }, [products]);
@@ -72,13 +72,13 @@ function AdminStats() {
       return {
         category: cat.categoryName,
         percentage: randomPercentage,
-        amount: `$${(catProducts.length * 1000).toLocaleString()}`,
+        amount: `NRs.${(catProducts.length * 1000).toLocaleString()}`,
         color: colors[index % colors.length]
       };
     });
     return breakdown.length ? breakdown : [
-      { category: "Electronics", percentage: 45, amount: "$20,354", color: "blue" },
-      { category: "Clothing", percentage: 25, amount: "$11,308", color: "purple" }
+      { category: "Electronics", percentage: 45, amount: "NRs.20,354", color: "blue" },
+      { category: "Clothing", percentage: 25, amount: "NRs.11,308", color: "purple" }
     ];
   }, [categories, products]);
 
@@ -108,7 +108,7 @@ function AdminStats() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
-                <h3 className="text-3xl font-bold text-gray-900">${stats.totalRevenue.toLocaleString()}</h3>
+                <h3 className="text-3xl font-bold text-gray-900">NRs.{stats.totalRevenue.toLocaleString()}</h3>
                 <div className="flex items-center mt-2">
                   <svg className="h-4 w-4 text-green-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
