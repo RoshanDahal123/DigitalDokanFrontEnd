@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../../globals/component/Navbar";
 import Card from "../product/components/Card";
 import { fetchProducts } from "../../store/productSlice";
+import { verifyPayment } from "../../store/orderSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { FaShoppingBag, FaTruck, FaShieldAlt, FaHeadset, FaArrowRight } from "react-icons/fa";
 
@@ -12,7 +13,14 @@ const LandingPage = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-  }, []);
+    
+    // Check for Khalti payment query parameters
+    const queryParams = new URLSearchParams(window.location.search);
+    const pidx = queryParams.get("pidx");
+    if (pidx) {
+      dispatch(verifyPayment(pidx));
+    }
+  }, [dispatch]);
 
   // Get featured products (first 8)
   const featuredProducts = products.slice(0, 8);

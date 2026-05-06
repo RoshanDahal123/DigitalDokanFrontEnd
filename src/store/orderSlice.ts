@@ -119,6 +119,22 @@ export function fetchMyOrderDetail(id: string) {
     }
   };
 }
+
+export function verifyPayment(pidx: string) {
+  return async function verifyPaymentThunk(dispatch: AppDispatch) {
+    try {
+      const response = await APIWITHTOKEN.post("/order/verify-transaction", { pidx });
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
 export function cancelMyOrder(id: string) {
   return async function cancelMyOrderThunk(dispatch: AppDispatch) {
     try {
