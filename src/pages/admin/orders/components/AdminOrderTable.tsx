@@ -107,7 +107,7 @@ const AdminOrderTable = ({ orders }: { orders: IAdminOrder[] }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-bold text-gray-900">
-                        ${order?.totalAmount?.toFixed(2)}
+                        NRs. {order?.totalAmount?.toFixed(2)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

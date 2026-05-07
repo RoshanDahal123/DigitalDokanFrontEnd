@@ -135,7 +135,7 @@ const ProductTable = ({ products }: { products: IProduct[] }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-semibold text-gray-900">
-                        ${product?.productPrice}
+                        NRs. {product?.productPrice}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -145,7 +145,7 @@ const ProductTable = ({ products }: { products: IProduct[] }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <img
-                        src={product?.productImageUrl}
+                        src={`http://localhost:4000/${product?.productImageUrl}`}
                         alt={product?.productName}
                         className="h-12 w-12 rounded-lg object-cover shadow-sm"
                       />
