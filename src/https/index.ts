@@ -1,7 +1,7 @@
 import axios from "axios";
-
+const baseURL = import.meta.env.VITE_API_URL|| "http://localhost:4000/api/";
 export const API = axios.create({
-  baseURL: "http://localhost:4000/api/",
+  baseURL: baseURL,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -9,7 +9,7 @@ export const API = axios.create({
 });
 
 export const APIWITHTOKEN = axios.create({
-  baseURL: "http://localhost:4000/api/",
+  baseURL: baseURL,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -31,7 +31,7 @@ APIWITHTOKEN.interceptors.request.use(
 );
 
 export const APIWITHADMINTOKEN = axios.create({
-  baseURL: "http://localhost:4000/api/",
+  baseURL: baseURL,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

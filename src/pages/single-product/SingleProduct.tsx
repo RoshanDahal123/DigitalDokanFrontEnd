@@ -9,7 +9,7 @@ import { fetchProductReviews } from "../../store/reviewSlice";
 import ReviewSection from "./components/ReviewSection";
 import { FaHeart, FaRegHeart, FaStar, FaShoppingCart, FaBox, FaTruck, FaShieldAlt, FaRegStar } from "react-icons/fa";
 import { BsLightning } from "react-icons/bs";
-
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
 function SingleProduct() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -119,7 +119,7 @@ function SingleProduct() {
             <div>
               <div className="relative rounded-2xl overflow-hidden bg-gray-100 mb-4">
                 <img
-                  src={`http://localhost:4000/${product.productImageUrl}`}
+                  src={`${baseURL}${product.productImageUrl}`}
                   alt={product.productName}
                   className="w-full h-[500px] object-cover"
                 />

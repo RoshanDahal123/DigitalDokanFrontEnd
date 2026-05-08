@@ -5,7 +5,7 @@ import { useAppDispatch } from "../../../store/hook";
 import { addToWishlist, removeFromWishlist } from "../../../store/wishlistSlice";
 import { addToCart } from "../../../store/cartSlice";
 import { FaHeart, FaRegHeart, FaStar, FaShoppingCart, FaEye } from "react-icons/fa";
-
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
 interface ICardProp {
   product: IProduct;
 }
@@ -60,7 +60,7 @@ const Card: React.FC<ICardProp> = ({ product }) => {
           {/* Image Container */}
           <div className="relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 aspect-square">
             <img
-              src={`http://localhost:4000/${product.productImageUrl}`}
+              src={`${baseURL}${product.productImageUrl}`}
               alt={product.productName}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
             />

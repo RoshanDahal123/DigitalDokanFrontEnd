@@ -5,7 +5,7 @@ import { fetchAdminOrderDetail, updateOrderStatusByAdmin, updatePaymentStatusByA
 import { ChangeEvent, useEffect } from "react";
 import { socket } from "../../../App";
 import { FaBox, FaCreditCard, FaTruck, FaUser, FaClipboardList } from "react-icons/fa";
-
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
 const AdminOrderDetail = () => {
   const { id } = useParams();
 
@@ -92,7 +92,7 @@ const AdminOrderDetail = () => {
                     <div className="w-full md:w-32 h-32 flex-shrink-0 bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
                       <img
                         className="w-full h-full object-contain"
-                        src={`http://localhost:4000/${od?.Product?.productImageUrl}`}
+                        src={`${baseURL}${od?.Product?.productImageUrl}`}
                         alt={od?.Product?.productName}
                       />
                     </div>

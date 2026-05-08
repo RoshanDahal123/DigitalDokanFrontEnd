@@ -4,7 +4,7 @@ import { fetchWishlist, removeFromWishlist } from "../../store/wishlistSlice";
 import Navbar from "../../globals/component/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { FaHeart, FaShoppingCart, FaTrash, FaArrowRight, FaShoppingBag } from "react-icons/fa";
-
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
 const Wishlist = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -95,7 +95,7 @@ const Wishlist = () => {
                 <Link to={`/product/${item.Product.id}`}>
                   <div className="relative h-64 bg-gray-100 overflow-hidden group">
                     <img
-                      src={`http://localhost:4000/${item.Product.productImageUrl}`}
+                      src={`${baseURL}${item.Product.productImageUrl}`}
                       alt={item.Product.productName}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />

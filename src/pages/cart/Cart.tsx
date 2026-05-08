@@ -6,7 +6,7 @@ import {
 } from "../../store/cartSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { FaTrash, FaMinus, FaPlus, FaShoppingBag, FaArrowRight, FaTruck, FaShieldAlt } from "react-icons/fa";
-
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
 const Cart = () => {
   const { items } = useAppSelector((store) => store.cart);
   const dispatch = useAppDispatch();
@@ -90,7 +90,7 @@ const Cart = () => {
                     {/* Product Image */}
                     <div className="w-full md:w-40 h-40 flex-shrink-0">
                       <img
-                        src={`http://localhost:4000/${item?.Product?.productImageUrl}`}
+                        src={`${baseURL}${item?.Product?.productImageUrl}`}
                         alt={item?.Product?.productName}
                         className="w-full h-full object-cover rounded-xl shadow-md"
                       />

@@ -8,7 +8,7 @@ import {
 } from "../../../../store/adminProductSlice";
 import { Link } from "react-router-dom";
 import { LiaEditSolid } from "react-icons/lia";
-
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
 const ProductTable = ({ products }: { products: any[] }) => {
   const [searchItem, setSearchItem] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -143,7 +143,7 @@ const ProductTable = ({ products }: { products: any[] }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <img
-                        src={`http://localhost:4000/${product?.productImageUrl}`}
+                        src={`${baseURL}${product?.productImageUrl}`}
                         alt={product?.productName}
                         className="h-12 w-12 rounded-lg object-cover shadow-sm"
                       />

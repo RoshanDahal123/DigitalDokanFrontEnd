@@ -1,5 +1,5 @@
 import { IProduct } from "../../../product/types";
-
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
 function SingleProduct({ product }: { product: IProduct }) {
   return (
     <div>
@@ -10,7 +10,7 @@ function SingleProduct({ product }: { product: IProduct }) {
               <div className="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4">
                 <img
                   className="w-full h-full object-cover"
-                  src={`http://localhost:4000/${product?.productImageUrl}`}
+                  src={`${baseURL}${product?.productImageUrl}`}
                   alt="Product Image"
                 />
               </div>
