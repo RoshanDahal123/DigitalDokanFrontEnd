@@ -37,4 +37,5 @@ export interface IData {
   totalAmount: number;
   paymentMethod: PaymentMethod;
   products: IProduct[];
+  zipCode: string;
 }

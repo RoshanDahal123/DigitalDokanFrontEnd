@@ -34,7 +34,7 @@ function ProductModal({ closeModal }: { closeModal: () => void }) {
     setData((data) => ({
       ...data,
 
-      [name]: name === "productImageUrl" ? (e.target.files[0] as File) : value,
+      [name]: name === "productImageUrl" ? ((e.target as HTMLInputElement).files![0] as File) : value,
     }));
   };
 

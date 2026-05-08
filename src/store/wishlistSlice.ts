@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "./store";
-import { API, APIWITHTOKEN } from "../https";
+import { APIWITHTOKEN } from "../https";
 
 interface Wishlist {
   id: string;

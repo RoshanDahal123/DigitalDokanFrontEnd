@@ -18,8 +18,6 @@ function SingleProduct() {
   const { productReviews } = useAppSelector((store) => store.review);
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(0);
 
   const token = localStorage.getItem("token");
 

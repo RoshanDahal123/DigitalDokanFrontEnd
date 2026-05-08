@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "../../store/cartSlice";
 import { logoutUser } from "../../store/authSlice";
-import { FaShoppingCart, FaUser, FaSignOutAlt, FaUserPlus, FaSignInAlt, FaTachometerAlt, FaBox, FaClipboardList, FaHeart } from "react-icons/fa";
+import { FaShoppingCart, FaSignOutAlt, FaUserPlus, FaSignInAlt, FaTachometerAlt, FaBox, FaClipboardList, FaHeart } from "react-icons/fa";
 
 function Navbar() {
   const reduxToken = useAppSelector((store) => store.auth.user.token);

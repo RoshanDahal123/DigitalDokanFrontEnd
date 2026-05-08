@@ -1,17 +1,15 @@
 import { useCallback, useState } from "react";
-import { IProduct } from "../../../product/types";
 import ProductModal from "./AddProductModal";
 import UpdateProductModal from "./UpdateProductModal";
 
 import { useAppDispatch } from "../../../../store/hook";
 import {
   deleteProductItem,
-  updateProduct,
 } from "../../../../store/adminProductSlice";
 import { Link } from "react-router-dom";
 import { LiaEditSolid } from "react-icons/lia";
 
-const ProductTable = ({ products }: { products: IProduct[] }) => {
+const ProductTable = ({ products }: { products: any[] }) => {
   const [searchItem, setSearchItem] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
