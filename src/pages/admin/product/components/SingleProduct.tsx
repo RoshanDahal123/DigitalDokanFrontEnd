@@ -1,5 +1,5 @@
 import { IProduct } from "../../../product/types";
-const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "https://mern-digitaldhokanproject.onrender.com/";
 function SingleProduct({ product }: { product: IProduct }) {
   return (
     <div>

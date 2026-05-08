@@ -9,7 +9,7 @@ import { fetchProductReviews } from "../../store/reviewSlice";
 import ReviewSection from "./components/ReviewSection";
 import { FaHeart, FaRegHeart, FaStar, FaShoppingCart, FaBox, FaTruck, FaShieldAlt, FaRegStar } from "react-icons/fa";
 import { BsLightning } from "react-icons/bs";
-const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "https://mern-digitaldhokanproject.onrender.com/";
 function SingleProduct() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

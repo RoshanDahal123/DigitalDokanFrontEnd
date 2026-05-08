@@ -6,7 +6,7 @@ import {
 } from "../../store/cartSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { FaTrash, FaMinus, FaPlus, FaShoppingBag, FaArrowRight, FaTruck, FaShieldAlt } from "react-icons/fa";
-const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "https://mern-digitaldhokanproject.onrender.com/";
 const Cart = () => {
   const { items } = useAppSelector((store) => store.cart);
   const dispatch = useAppDispatch();

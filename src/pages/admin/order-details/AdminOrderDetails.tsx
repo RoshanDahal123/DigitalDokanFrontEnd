@@ -5,7 +5,7 @@ import { fetchAdminOrderDetail, updateOrderStatusByAdmin, updatePaymentStatusByA
 import { ChangeEvent, useEffect } from "react";
 import { socket } from "../../../App";
 import { FaBox, FaCreditCard, FaTruck, FaUser, FaClipboardList } from "react-icons/fa";
-const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "https://mern-digitaldhokanproject.onrender.com/";
 const AdminOrderDetail = () => {
   const { id } = useParams();
 

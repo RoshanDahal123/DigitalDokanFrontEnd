@@ -8,7 +8,7 @@ import {
 } from "../../../../store/adminProductSlice";
 import { Link } from "react-router-dom";
 import { LiaEditSolid } from "react-icons/lia";
-const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "https://mern-digitaldhokanproject.onrender.com/";
 const ProductTable = ({ products }: { products: any[] }) => {
   const [searchItem, setSearchItem] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);

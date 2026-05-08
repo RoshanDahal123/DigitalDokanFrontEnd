@@ -18,7 +18,7 @@ import {
   FaCheckCircle
 } from "react-icons/fa";
 import { KhaltiLogo, EsewaLogo, CODLogo } from "../../components/PaymentLogos";
-const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "https://mern-digitaldhokanproject.onrender.com/";
 function Checkout() {
   const { items } = useAppSelector((store) => store.cart);
   const { khaltiUrl } = useAppSelector((store) => store.orders);
