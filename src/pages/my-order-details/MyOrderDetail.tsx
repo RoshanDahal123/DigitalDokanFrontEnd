@@ -16,7 +16,7 @@ import {
   FaMoneyBillWave,
   FaBoxOpen
 } from "react-icons/fa";
-
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
 const MyOrderDetail = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
@@ -109,7 +109,7 @@ const MyOrderDetail = () => {
                       >
                         <div className="w-32 h-32 flex-shrink-0 bg-gray-100 rounded-xl overflow-hidden shadow-md">
                           <img
-                            src={`http://localhost:4000/${od?.Product?.productImageUrl}`}
+                            src={`${baseURL}${od?.Product?.productImageUrl}`}
                             alt={od?.Product?.productName}
                             className="w-full h-full object-cover"
                           />

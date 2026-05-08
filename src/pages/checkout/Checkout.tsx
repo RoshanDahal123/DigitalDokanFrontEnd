@@ -18,7 +18,7 @@ import {
   FaCheckCircle
 } from "react-icons/fa";
 import { KhaltiLogo, EsewaLogo, CODLogo } from "../../components/PaymentLogos";
-
+const baseURL = import.meta.env.IMAGE_UPLOAD_URL|| "http://localhost:4000/";
 function Checkout() {
   const { items } = useAppSelector((store) => store.cart);
   const { khaltiUrl } = useAppSelector((store) => store.orders);
@@ -365,7 +365,7 @@ function Checkout() {
                       >
                         <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden shadow-md">
                           <img
-                            src={`http://localhost:4000/${item.Product?.productImageUrl}`}
+                            src={`${baseURL}${item.Product?.productImageUrl}`}
                             alt={item?.Product?.productName}
                             className="w-full h-full object-cover"
                           />
