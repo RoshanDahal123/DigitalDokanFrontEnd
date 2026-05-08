@@ -27,7 +27,7 @@ import AdminOrderDetail from "./pages/admin/order-details/AdminOrderDetails";
 import ProtectedRoute from "./globals/component/ProtectedRoute";
 import { io } from "socket.io-client";
 
-export const socket = io("http://localhost:4000", {
+export const socket = io("https://mern-digitaldhokanproject.onrender.com", {
   auth: {
     token:
       localStorage.getItem("adminToken") || localStorage.getItem("token") || "",
