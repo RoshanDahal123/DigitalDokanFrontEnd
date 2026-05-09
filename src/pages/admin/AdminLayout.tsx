@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Sidebar from "./components/sidebar/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate= useNavigate();
 
   return (
     <>
@@ -78,7 +80,7 @@ function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
                   <button 
                     onClick={() => {
                       localStorage.removeItem("token");
-                      window.location.href = "/login";
+                      navigate('/login');
                     }}
                     className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
                   >
