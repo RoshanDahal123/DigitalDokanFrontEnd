@@ -1,11 +1,16 @@
 import { useState } from "react";
 import Sidebar from "./components/sidebar/Sidebar";
 import { useNavigate } from "react-router-dom";
-
+import { useAppDispatch } from "../../store/hook";
+import { logoutUser } from "../../store/authSlice";
 function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate= useNavigate();
-
+  const dispatch = useAppDispatch();
+ const handleLogout = () => {
+     dispatch(logoutUser());
+     navigate("/");
+   };
   return (
     <>
       <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -80,7 +85,7 @@ function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
                   <button 
                     onClick={() => {
                       localStorage.removeItem("token");
-                      navigate('/login');
+                     handleLogout();
                     }}
                     className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
                   >
