@@ -84,7 +84,7 @@ function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
                 <div className="flex items-center pl-4 border-l border-gray-300">
                   <button 
                     onClick={() => {
-                      localStorage.removeItem("token");
+                
                      handleLogout();
                     }}
                     className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
